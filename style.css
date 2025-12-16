@@ -1,0 +1,577 @@
+:root {
+    --bg-light: #f9f7f2;
+    --text-main: #1a1a1a;
+    --text-muted: #555;
+    --accent: #2d3436;
+    --white: #ffffff;
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --footer-bg: #1a1a1a;
+    /* Grafite profundo */
+    --footer-text: #e0e0e0;
+    /* Cinza claro para leitura */
+    --footer-muted: #999999;
+    /* Texto secundário */
+    --footer-border: #333333;
+    /* Linhas discretas */
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- HEADER --- */
+.main-header {
+    padding: 30px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--white);
+}
+
+.logo span {
+    font-weight: 400;
+    font-style: italic;
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--white);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.8;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    opacity: 1;
+    letter-spacing: 3px;
+}
+
+/* --- HERO --- */
+.hero {
+    height: 118vh;
+    background: url('../img/background_home.png') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    padding: 0 10%;
+    position: relative;
+    color: var(--white);
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.hero-content {
+    position: relative;
+    max-width: 700px;
+}
+
+.hero-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.description {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.btn {
+    padding: 16px 35px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.btn-primary {
+    background: var(--white);
+    color: var(--text-main);
+}
+
+.btn-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--white);
+    margin-left: 15px;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- TRAJETÓRIA --- */
+.trajetoria {
+    padding: 120px 10%;
+}
+
+.container-trajetoria {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+}
+
+.section-subtitle {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 15px;
+}
+
+.trajetoria-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+.trajetoria-metricas {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #ddd;
+}
+
+.metrica-item strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    display: block;
+}
+
+.trajetoria-image-wrapper img {
+    width: 100%;
+    filter: grayscale(100%);
+    transition: var(--transition);
+    border-radius: 4px;
+}
+
+.trajetoria-image-wrapper img:hover {
+    filter: grayscale(0%);
+    transform: scale(1.02);
+}
+
+/* Botão de texto elegante para Biografia */
+.btn-text-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.btn-text-link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--text-main);
+    transform: scaleX(0.3);
+    transform-origin: bottom left;
+    transition: transform 0.3s ease;
+}
+
+.btn-text-link:hover::after {
+    transform: scaleX(1);
+}
+
+/* Ajuste no botão Ver Catálogo */
+.obras-header .btn-secondary {
+    border-color: var(--text-main);
+    color: var(--text-main);
+    padding: 10px 20px;
+}
+
+.obras-header .btn-secondary:hover {
+    background: var(--text-main);
+    color: #fff;
+}
+
+.slider-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--text-main);
+    background: transparent;
+    cursor: pointer;
+}
+
+
+@media (max-width: 768px) {
+    .obras-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .obras-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+
+
+.obras-header .btn-secondary {
+    transition: all 0.3s ease;
+}
+
+.obras-header .btn-secondary:hover {
+    transform: translateY(-2px);
+}
+
+
+/* --- OBRAS SLIDER --- */
+.obras {
+    padding: 100px 5%;
+    background-color: #f9f7f2;
+    overflow: hidden;
+}
+
+.container-obras {
+    max-width: 1140px;
+    /* (350px card * 3) + (30px gap * 2) aproximadamente */
+    margin: 0 auto;
+    position: relative;
+}
+
+.obras-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+
+.obras-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+.obras-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.obras-header .btn-secondary {
+    padding: 10px 22px;
+    border-color: var(--text-main);
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+
+.obras-wrapper {
+    position: relative;
+    width: 100%;
+    /* O JS controlará o overflow: hidden quando houver 4+ obras */
+    transition: all 0.5s ease;
+}
+
+.obras-grid {
+    display: flex;
+    /* Flex permite o movimento horizontal do slider */
+    gap: 30px;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+    /* Centraliza automaticamente se houver menos de 3 cards */
+    justify-content: center;
+}
+
+.obra-card {
+    flex: 0 0 350px;
+    /* Largura fixa para manter o grid de 3 sempre igual */
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    text-align: left;
+}
+
+.obra-card:hover {
+    transform: translateY(-10px);
+}
+
+.obra-capa img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.obra-info h3 {
+    font-family: 'Playfair Display', serif;
+    margin: 10px 0;
+}
+
+.obra-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* --- NAVEGAÇÃO --- */
+.obras-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.obras-nav:hover {
+    background: #444;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.obras-nav.prev {
+    left: -60px;
+}
+
+.obras-nav.next {
+    right: -60px;
+}
+
+/* Ajuste para telas menores que o container */
+@media (max-width: 1300px) {
+    .obras-nav.prev {
+        left: 10px;
+    }
+
+    .obras-nav.next {
+        right: 10px;
+    }
+
+    .obras-wrapper {
+        padding: 0 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .obra-card {
+        flex: 0 0 85vw;
+        /* Mobile mostra quase um card inteiro */
+    }
+
+    .obras-nav {
+        display: none !important;
+    }
+
+    /* Mobile usa scroll natural */
+    .obras-wrapper {
+        overflow-x: auto !important;
+    }
+}
+
+.btn-buy {
+    background: var(--text-main);
+    color: var(--white);
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 900px) {
+    .container-trajetoria {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+
+    .hero {
+        padding: 0 5%;
+        text-align: center;
+    }
+
+    .hero-overlay {
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .btn-secondary {
+        margin: 15px 0 0 0;
+        display: block;
+    }
+}
+
+.footer-institucional {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    padding: 80px 5% 40px 5%;
+    font-family: var(--font-sans);
+    border-top: 1px solid var(--footer-border);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    /* Coluna da marca é mais larga */
+    gap: 60px;
+}
+
+/* Tipografia e Títulos */
+.footer-name {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.footer-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--footer-muted);
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.footer-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--footer-muted);
+    margin-bottom: 20px;
+    max-width: 320px;
+}
+
+/* Links e Listas */
+.footer-address {
+    font-style: normal;
+}
+
+.footer-list {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-list li {
+    margin-bottom: 12px;
+}
+
+.footer-link {
+    color: var(--footer-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+    display: inline-block;
+}
+
+.footer-link:hover {
+    opacity: 0.7;
+}
+
+.footer-social {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.separator {
+    color: var(--footer-border);
+    font-size: 0.8rem;
+}
+
+.footer-copyright {
+    font-size: 0.75rem;
+    color: #555555;
+    margin-top: 30px;
+    border-top: 1px solid var(--footer-border);
+    padding-top: 20px;
+}
+
+/* Responsividade (Mobile) */
+@media (max-width: 900px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        /* Empilha as colunas */
+        gap: 40px;
+    }
+
+    .footer-institucional {
+        padding: 60px 24px 40px 24px;
+        text-align: left;
+    }
+
+    .footer-description {
+        max-width: 100%;
+    }
+}

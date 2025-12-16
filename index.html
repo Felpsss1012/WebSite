@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario Paulo | Escritor</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="logo">Mario <span>Paulo</span></div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#obras">Obras</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <span class="small-tag">Escritor</span>
+                <h1>Mario<em> Paulo</em></h1>
+                <p class="description">
+                    Obras literárias que investigam a experiência humana com foco na formação crítica e sensível do
+                    leitor.
+                </p>
+                <div class="btn-container">
+                    <a href="#obras" class="btn btn-primary">Ver Obras</a>
+                    <a href="#sobre" class="btn btn-secondary">A Trajetória</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="sobre" class="trajetoria">
+            <div class="container-trajetoria">
+                <div class="trajetoria-text">
+                    <span class="section-subtitle">O Autor</span>
+                    <h2>Trajetória Intelectual</h2>
+                    <p>Mario Paulo desenvolveu uma trajetória voltada para estudos de literatura e teoria cultural, com
+                        atenção a questões ambientais e às práticas de pesquisa e edição.</p>
+                    <p>Os trabalhos abordam relações entre memória coletiva e práticas de leitura, transitando entre o
+                        ensaio e a crônica documental.</p>
+
+                    <a href="autor.html" class="btn-text-link">Conheça a biografia completa →</a>
+
+                    <div class="trajetoria-metricas">
+                        <div class="metrica-item">
+                            <strong id="contador-livros">01</strong>
+                            <span>Livro</span>
+                        </div>
+                        <div class="metrica-divider"></div>
+                        <div class="metrica-item">
+                            <strong id="contador-linguas">01</strong>
+                            <span>Idioma</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="trajetoria-image-wrapper">
+                    <img src="../img/MP_foto.jpeg" alt="Mario Paulo" class="img-reveal">
+                </div>
+            </div>
+        </section>
+
+        <section id="obras" class="obras">
+            <div class="container-obras">
+                <div class="obras-header">
+                    <h2>Obras Publicadas</h2>
+
+                    <div class="obras-actions">
+                        <a href="obras-galeria.html" class="btn btn-secondary">
+                            Explorar Catálogo Completo
+                        </a>
+
+                        <div class="slider-controls">
+                            <button class="nav-btn prev" aria-label="Anterior">←</button>
+                            <button class="nav-btn next" aria-label="Próximo">→</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="obras-slider">
+                    <div class="obras-grid">
+                        <article class="obra-card">
+                            <div class="obra-capa">
+                                <img src="../img/capa-livro-1.jpg" alt="Capa do livro">
+                            </div>
+                            <div class="obra-info">
+                                <span class="obra-ano">2018</span>
+                                <h3>Territórios e Memória</h3>
+                                <p>Investigação documental sobre paisagem e práticas culturais.</p>
+                                <div class="obra-actions">
+                                    <a href="#" class="link-minimal">Ler online</a>
+                                    <a href="#" class="btn-buy">Amazon</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="obra-card">
+                            <div class="obra-capa">
+                                <img src="../img/capa-livro-1.jpg" alt="Capa do livro">
+                            </div>
+                            <div class="obra-info">
+                                <span class="obra-ano">2018</span>
+                                <h3>Territórios e Memória</h3>
+                                <p>Investigação documental sobre paisagem e práticas culturais.</p>
+                                <div class="obra-actions">
+                                    <a href="#" class="link-minimal">Ler online</a>
+                                    <a href="#" class="btn-buy">Amazon</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="obra-card">
+                            <div class="obra-capa">
+                                <img src="../img/capa-livro-1.jpg" alt="Capa do livro">
+                            </div>
+                            <div class="obra-info">
+                                <span class="obra-ano">2018</span>
+                                <h3>Territórios e Memória</h3>
+                                <p>Investigação documental sobre paisagem e práticas culturais.</p>
+                                <div class="obra-actions">
+                                    <a href="#" class="link-minimal">Ler online</a>
+                                    <a href="#" class="btn-buy">Amazon</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="obra-card">
+                            <div class="obra-capa">
+                                <img src="../img/capa-livro-1.jpg" alt="Capa do livro">
+                            </div>
+                            <div class="obra-info">
+                                <span class="obra-ano">2018</span>
+                                <h3>Territórios e Memória</h3>
+                                <p>Investigação documental sobre paisagem e práticas culturais.</p>
+                                <div class="obra-actions">
+                                    <a href="#" class="link-minimal">Ler online</a>
+                                    <a href="#" class="btn-buy">Amazon</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer-institucional" id="contato">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h2 class="footer-name">Mario Paulo</h2>
+                <p class="footer-description">Investigação literária sobre cultura, território e a experiência humana.
+                </p>
+                <p class="footer-copyright">© 2024 Mario Paulo. Todos os direitos reservados.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Contato Institucional</h3>
+                <address class="footer-address">
+                    <a href="mailto:contato@mariopaulo.com.br" class="footer-link">contato@mariopaulo.com.br</a>
+                    <div class="footer-social">
+                        <a href="#" class="footer-link">LinkedIn</a>
+                        <span class="separator">/</span>
+                        <a href="#" class="footer-link">Instagram</a>
+                    </div>
+                </address>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Informações</h3>
+                <nav class="footer-nav">
+                    <ul class="footer-list">
+                        <li><a href="#sobre" class="footer-link">Sobre o Autor</a></li>
+                        <li><a href="#obras" class="footer-link">Obras Publicadas</a></li>
+                        <li><a href="/politica-de-privacidade" class="footer-link">Política de Privacidade</a></li>
+                        <li><a href="/termos-de-uso" class="footer-link">Termos de Uso</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </footer>
+    <script src="./script.js"></script>
+</body>
+
+</html>
