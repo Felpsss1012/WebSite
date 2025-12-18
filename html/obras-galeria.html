@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Obras | Mario Paulo</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+</head>
+
+<body>
+
+    <header class="main-header style-fixed">
+        <div class="logo"><a href="../index.html" style="color:inherit; text-decoration:none;">Mario
+                <span>Paulo</span></a></div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="./autor.html">Sobre</a></li>
+                <li><a href="./obras-galeria.html" class="active">Obras</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="catalogo-main">
+        <section class="catalogo-intro">
+            <h1>Catálogo de Obras</h1>
+            <p>Acervo completo das publicações, ensaios e investigações literárias.</p>
+        </section>
+
+        <section class="catalogo-controls">
+            <div class="search-box">
+                <label for="searchInput" class="sr-only">Buscar obra</label>
+                <input type="text" id="searchInput" placeholder="Buscar por título ou palavra-chave...">
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="filters-box">
+                <select id="filterYear" aria-label="Filtrar por ano">
+                    <option value="all">Todos os Anos</option>
+                </select>
+
+                <select id="filterCategory" aria-label="Filtrar por categoria">
+                    <option value="all">Todas as Categorias</option>
+                    <option value="romance">Romance</option>
+                    <option value="ensaio">Ensaio</option>
+                    <option value="cronica">Crônica</option>
+                    <option value="artigo">Artigo Acadêmico</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="catalogo-grid-section">
+            <div id="obrasGrid" class="catalogo-grid">
+            </div>
+            <div id="noResults" class="no-results hidden">
+                <p>Nenhuma obra encontrada com os critérios selecionados.</p>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="obraModal" class="obra-modal">
+        <div class="modal-wrapper">
+            <button id="closeModal" class="modal-close-btn" aria-label="Fechar">&times;</button>
+            <div class="modal-content">
+                <figure class="modal-image-wrapper">
+                    <img id="modalImg" src="" alt="">
+                </figure>
+                <article class="modal-info">
+                    <header>
+                        <span id="modalYear" class="meta-tag"></span>
+                        <span id="modalCategory" class="meta-tag"></span>
+                        <h2 id="modalTitle"></h2>
+                    </header>
+                    <div class="modal-synopsis">
+                        <p id="modalSynopsis"></p>
+                    </div>
+                    <footer class="modal-actions">
+                        <a id="btnRead" href="#" target="_blank" class="btn btn-secondary">Ler Online</a>
+                        <a id="btnBuy" href="#" target="_blank" class="btn btn-primary">Adquirir na Amazon</a>
+                    </footer>
+                </article>
+            </div>
+        </div>
+    </dialog>
+
+    <footer class="footer-institucional" id="contato">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h2 class="footer-name">Mario Paulo</h2>
+                <p class="footer-description">Investigação literária sobre cultura, território e a experiência humana.
+                </p>
+                <p class="footer-copyright">© 2024 Mario Paulo. Todos os direitos reservados.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Contato Institucional</h3>
+                <address class="footer-address">
+                    <a href="mailto:contato@mariopaulo.com.br" class="footer-link">contato@mariopaulo.com.br</a>
+                    <div class="footer-social">
+                        <a href="#" class="footer-link">LinkedIn</a>
+                        <span class="separator">/</span>
+                        <a href="#" class="footer-link">Instagram</a>
+                    </div>
+                </address>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Informações</h3>
+                <nav class="footer-nav">
+                    <ul class="footer-list">
+                        <li><a href="../index.html#sobre" class="footer-link">Sobre o Autor</a></li>
+                        <li><a href="../index.html#obras" class="footer-link">Obras Publicadas</a></li>
+                        <li><a href="/politica-de-privacidade" class="footer-link">Política de Privacidade</a></li>
+                        <li><a href="/termos-de-uso" class="footer-link">Termos de Uso</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../scripts/script.js"></script>
+</body>
+
+</html>
