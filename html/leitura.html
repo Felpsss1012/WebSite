@@ -6,33 +6,6 @@
     <title>Leitura Online | Mario Paulo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style/style.css">
-    <style>
-        :root { --max-reading-width: 740px; }
-        .reader-container { display: grid; grid-template-columns: 300px 1fr; gap: 40px; max-width: 1200px; margin: 120px auto 60px; padding: 0 5%; }
-        
-        /* Sidebar Editorial */
-        .reader-sidebar { position: sticky; top: 100px; height: fit-content; }
-        .book-mini-cover { width: 100%; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-bottom: 20px; }
-        .chapter-nav { list-style: none; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-        .chapter-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; }
-        .chapter-item.active { background: var(--white); border: 1px solid #ddd; font-weight: 600; }
-        .chapter-item.locked { opacity: 0.5; cursor: not-allowed; }
-        .lock-icon { font-size: 0.8rem; }
-
-        /* Área do Texto Literário */
-        .reading-area { background: var(--white); padding: 60px; border-radius: 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.02); min-height: 80vh; }
-        .reading-content { max-width: var(--max-reading-width); margin: 0 auto; }
-        .reading-content h2 { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 40px; color: var(--text-main); }
-        .reading-text { font-family: 'Playfair Display', serif; font-size: 1.25rem; line-height: 1.85; color: #333; white-space: pre-wrap; }
-        
-        .cta-box { margin-top: 60px; padding-top: 40px; border-top: 1px dotted #ccc; text-align: center; }
-        
-        @media (max-width: 900px) {
-            .reader-container { grid-template-columns: 1fr; margin-top: 80px; }
-            .reader-sidebar { position: static; }
-            .reading-area { padding: 30px 20px; }
-        }
-    </style>
 </head>
 <body class="bg-light">
     <header class="main-header style-fixed">

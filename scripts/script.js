@@ -38,7 +38,7 @@ const CONFIG = {
 
 // Query GROQ
 const SANITY_QUERY = `
-*[_type == "livro" && visivel == true] | order(dataLancamento desc){
+*[_type == "livro" && (visivel == true || status == "Publicado")] | order(dataLancamento desc){
   _id,
   titulo,
   "slug": slug.current,
@@ -46,7 +46,8 @@ const SANITY_QUERY = `
   linkAmazon,
   dataLancamento,
   "image": capa.asset->url,
-  "categorias": categorias[]->title
+  "categorias": categorias[]->title,
+  status
 }
 `;
 
@@ -72,7 +73,7 @@ const state = {
    ========================= */
 document.addEventListener('DOMContentLoaded', async () => {
     initGlobalUX();
-    
+
     // Carrega dados (Sanity -> Fallback JSON -> Array Hardcoded)
     state.allWorks = await fetchWorksWithRetry();
 
@@ -106,11 +107,41 @@ async function fetchWorksWithRetry(retries = 1) {
 }
 
 async function fetchSanity() {
-    const res = await fetch(SANITY_ENDPOINT);
-    if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
-    const json = await res.json();
-    return json.result || [];
+    console.debug('[Sanity] Endpoint:', SANITY_ENDPOINT);
+
+    try {
+        const res = await fetch(SANITY_ENDPOINT, {
+            method: 'GET',
+            credentials: 'omit'
+        });
+
+        if (!res.ok) {
+            let body = '';
+            try {
+                body = await res.text();
+            } catch (_) {
+                body = '(no response body)';
+            }
+            throw new Error(`Sanity HTTP ${res.status}: ${body}`);
+        }
+
+        const json = await res.json();
+        console.debug('[Sanity] Response JSON:', json);
+
+        // Sanity v1 padrão → { result: [...] }
+        if (json && Array.isArray(json.result)) {
+            return json.result;
+        }
+
+        console.warn('[Sanity] Resposta inesperada, usando fallback:', json);
+        return [];
+    } catch (err) {
+        // IMPORTANTE: aqui aparecem erros reais de CORS no browser
+        console.error('[Sanity] Fetch falhou:', err);
+        throw err; // mantém fallback existente
+    }
 }
+
 
 async function fetchLocalFallback() {
     console.info('Tentando carregar fallback local (data/obras.json)...');
@@ -126,53 +157,85 @@ async function fetchLocalFallback() {
 }
 
 function normalizeWorks(data) {
-    if (!Array.isArray(data)) return [];
+    // Segurança: espera um array; se não for, loga e retorna vazio
+    if (!Array.isArray(data)) {
+        console.warn('[normalizeWorks] Esperado array, obtido:', data);
+        return [];
+    }
 
-    return data.map(item => {
-        // Data
-        let release_date = null;
-        let year = '';
+    console.debug('[normalizeWorks] Normalizando', data.length, 'itens. Exemplo:', data[0]);
 
-        if (item.dataLancamento) {
-            const d = new Date(item.dataLancamento);
-            if (!isNaN(d)) {
-                release_date = d.toISOString().split('T')[0];
-                year = d.getFullYear().toString();
+    const out = [];
+
+    for (let i = 0; i < data.length; i++) {
+        const raw = data[i];
+        try {
+            // Garante que temos um objeto mínimo
+            const item = raw || {};
+
+            // --- Data / ano ---
+            let release_date = null;
+            let year = '';
+            if (item.dataLancamento) {
+                const d = new Date(item.dataLancamento);
+                if (!isNaN(d.getTime())) {
+                    release_date = d.toISOString().split('T')[0];
+                    year = d.getFullYear().toString();
+                }
             }
+
+            // --- Categoria: aceita várias formas e defensivamente evita nulls ---
+            let category = 'obra';
+            if (Array.isArray(item.categorias) && item.categorias.length && item.categorias[0]) {
+                category = item.categorias[0];
+            } else if (typeof item.categoria === 'string' && item.categoria) {
+                category = item.categoria;
+            } else if (typeof item.categorias === 'string' && item.categorias) {
+                category = item.categorias;
+            }
+
+            // --- Slug pode ser objeto { current } no Sanity ---
+            let slugVal = '';
+            if (item.slug) {
+                if (typeof item.slug === 'string') slugVal = item.slug;
+                else if (typeof item.slug === 'object' && item.slug.current) slugVal = item.slug.current;
+            }
+
+            // --- Imagem: tenta várias chaves possíveis ---
+            const img = item.image || item.capa || item.capaUrl || (item.capa && item.capa.asset && item.capa.asset.url) || '../img/capa-padrao.png';
+
+            out.push({
+                id: item._id || null,
+                title: item.titulo || 'Sem título',
+                titulo: item.titulo || 'Sem título',
+
+                slug: slugVal,
+                image: img,
+                capa: img,
+
+                synopsis: item.sinopse || '',
+                sinopse: item.sinopse || '',
+
+                linkAmazon: item.linkAmazon || '',
+                linkRead: '',
+
+                date: release_date ? new Date(release_date) : null,
+                release_date,
+                year,
+
+                // GUARDA DEFENSIVA: nunca chamar toLowerCase em null/undefined
+                category: (category || 'obra').toLowerCase(),
+                categoria: (category || 'obra').toLowerCase()
+            });
+        } catch (err) {
+            // Log detalhado por item sem quebrar todo o processamento
+            console.error('[normalizeWorks] erro ao normalizar item index', i, 'raw:', raw, err);
+            // pula item problemático
         }
+    }
 
-        // Categoria
-        let category = 'obra';
-        if (Array.isArray(item.categorias) && item.categorias.length) {
-            category = item.categorias[0];
-        }
-
-        return {
-            // padrão interno
-            id: item._id || null,
-            title: item.titulo || 'Sem título',
-            titulo: item.titulo || 'Sem título',
-
-            slug: item.slug || '',
-            image: item.image || './img/capa-padrao.jpg',
-            capa: item.image || './img/capa-padrao.jpg',
-
-            synopsis: item.sinopse || '',
-            sinopse: item.sinopse || '',
-
-            linkAmazon: item.linkAmazon || '',
-            linkRead: '',
-
-            date: release_date ? new Date(release_date) : null,
-            release_date,
-            year,
-
-            category: category.toLowerCase(),
-            categoria: category.toLowerCase()
-        };
-    });
+    return out;
 }
-
 
 
 /* =========================
@@ -187,7 +250,7 @@ function initGlobalUX() {
             header.style.background = isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'transparent';
             header.style.boxShadow = isScrolled ? '0 2px 10px rgba(0,0,0,0.1)' : 'none';
             header.classList.toggle('scrolled', isScrolled);
-            
+
             // Ajuste de cores para contraste
             const color = isScrolled ? '#1a1a1a' : '#fff';
             document.querySelectorAll('.nav-links a, .logo').forEach(el => el.style.color = color);
@@ -196,10 +259,10 @@ function initGlobalUX() {
 
     // Smooth Scroll
     document.querySelectorAll('a[href^="#"], a[href*="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
             if (!href || href === '#') return;
-            
+
             // Lógica para links na mesma página ou cross-page
             if (href.startsWith('#')) {
                 const target = document.querySelector(href);
@@ -220,11 +283,11 @@ function initCatalog(works) {
     const grid = document.querySelector(CONFIG.selectors.grid);
     if (!grid) return;
 
-    // 1. Ler URL params para deep-linking
+    // 1. Ler URL params para deep-linking (normaliza category para lowercase)
     const params = new URLSearchParams(window.location.search);
     state.filters.term = params.get('q') || '';
     state.filters.year = params.get('year') || 'all';
-    state.filters.category = params.get('category') || 'all';
+    state.filters.category = (params.get('category') || 'all').toLowerCase();
 
     // 2. Setup Inputs
     const searchInput = document.querySelector(CONFIG.selectors.searchInput);
@@ -232,18 +295,40 @@ function initCatalog(works) {
     const filterCategory = document.querySelector(CONFIG.selectors.filterCategory);
 
     if (searchInput) searchInput.value = state.filters.term;
-    
-    // 3. Popular Selects dinamicamente
-    if (filterYear) populateSelect(filterYear, [...new Set(works.map(w => w.year).filter(Boolean))].sort().reverse());
-    if (filterCategory) populateSelect(filterCategory, [...new Set(works.map(w => w.category).filter(Boolean))].sort());
 
+    // 3. Popular Selects dinamicamente (gera opções a partir dos dados reais)
+    // YEARS
+    if (filterYear) {
+        filterYear.innerHTML = '<option value="all">Todos os Anos</option>';
+        const years = [...new Set(works.map(w => w.year).filter(Boolean))].sort().reverse();
+        years.forEach(y => {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y;
+            filterYear.appendChild(opt);
+        });
+    }
+
+    // CATEGORIES - valores em lowercase (para comparação), label capitalizada
+    if (filterCategory) {
+        filterCategory.innerHTML = '<option value="all">Todas</option>';
+        const categories = [...new Set(works.map(w => (w.category || '').toString().toLowerCase()).filter(Boolean))].sort();
+        categories.forEach(cat => {
+            const el = document.createElement('option');
+            el.value = cat;                    // valor comparável (lowercase)
+            el.textContent = capitalize(cat);  // label legível
+            filterCategory.appendChild(el);
+        });
+    }
+
+    // 4. Ajusta selects para o estado atual
     if (filterYear) filterYear.value = state.filters.year;
-    if (filterCategory) filterCategory.value = state.filters.category;
+    if (filterCategory) filterCategory.value = state.filters.category || 'all';
 
-    // 4. Render Inicial
+    // 5. Render Inicial
     applyFilters();
 
-    // 5. Event Listeners (com Debounce na busca)
+    // 6. Event Listeners (com Debounce na busca)
     if (searchInput) searchInput.addEventListener('input', debounce((e) => {
         state.filters.term = e.target.value;
         updateURL();
@@ -253,31 +338,40 @@ function initCatalog(works) {
     [filterYear, filterCategory].forEach(el => {
         if (el) el.addEventListener('change', (e) => {
             if (e.target.id === 'filterYear') state.filters.year = e.target.value;
-            if (e.target.id === 'filterCategory') state.filters.category = e.target.value;
+            if (e.target.id === 'filterCategory') state.filters.category = (e.target.value || 'all').toLowerCase();
             updateURL();
             applyFilters();
         });
     });
 }
 
+
 function applyFilters() {
     const { term, year, category } = state.filters;
-    const termLower = term.toLowerCase();
+    const termLower = (term || '').toLowerCase();
+    const categoryLower = (category || 'all').toLowerCase();
 
     const filtered = state.allWorks.filter(work => {
-        const matchesTerm = !term || work.title.toLowerCase().includes(termLower) || work.synopsis.toLowerCase().includes(termLower);
-        const matchesYear = year === 'all' || work.year === year;
-        const matchesCat = category === 'all' || work.category === category;
+        const workTitle = (work.title || work.titulo || '').toString();
+        const workSynopsis = (work.synopsis || work.sinopse || '').toString();
+        const workYear = work.year || '';
+        const workCategory = (work.category || work.categoria || '').toString().toLowerCase();
+
+        const matchesTerm = !term || workTitle.toLowerCase().includes(termLower) || workSynopsis.toLowerCase().includes(termLower);
+        const matchesYear = year === 'all' || workYear === year;
+        const matchesCat = categoryLower === 'all' || !workCategory || workCategory === categoryLower;
+
         return matchesTerm && matchesYear && matchesCat;
     });
 
     renderWorks(filtered);
 }
 
+
 function renderWorks(obras) {
     const grid = document.querySelector(CONFIG.selectors.grid);
     const slider = document.querySelector(CONFIG.selectors.slider);
-    
+
     // Define qual container usar (prioriza o grid da galeria, depois o slider da home)
     const container = grid || slider;
     if (!container) return;
@@ -292,32 +386,66 @@ function renderWorks(obras) {
     obras.forEach(obra => {
         const card = document.createElement('article');
         card.className = 'obra-card';
-        
+
         // Verifica se existe imagem, senão usa placeholder
         const imgUrl = obra.image || 'https://via.placeholder.com/400x600?text=Sem+Capa';
         const dataAno = obra.release_date ? obra.release_date.split('-')[0] : 'S/D';
 
         card.innerHTML = `
             <div class="obra-img-container">
-                <img src="${imgUrl}" alt="${obra.titulo}" class="obra-img" loading="lazy">
-                <div class="obra-overlay">
-                    <button class="btn-detalhes">Ver Detalhes</button>
+                <img src="${imgUrl}" alt="${escapeHtml(obra.titulo)}" class="obra-img" loading="lazy">
+                <div class="obra-overlay" aria-hidden="true">
+                    <button class="btn-detalhes" aria-label="Ver detalhes de ${escapeHtml(obra.titulo)}">Ver Detalhes</button>
+                    <a class="btn-read btn-secondary" href="${obra.slug ? `${CONFIG.routes.leitura}?obra=${encodeURIComponent(obra.slug)}` : '#'}">Ler Online</a>
                 </div>
             </div>
             <div class="obra-info">
                 <span class="obra-categoria">${capitalize(obra.categoria || 'Literatura')}</span>
-                <h3 class="obra-titulo">${obra.titulo}</h3>
+                <h3 class="obra-titulo">${escapeHtml(obra.titulo)}</h3>
                 <p class="obra-ano">${dataAno}</p>
             </div>
         `;
 
+        // Clique na carta abre modal (detalhes)
         card.addEventListener('click', () => openModal(obra));
+
+        // Intercepta botão "Ver Detalhes" para abrir modal sem propagar o clique da carta
+        const btnDetalhes = card.querySelector('.btn-detalhes');
+        if (btnDetalhes) {
+            btnDetalhes.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openModal(obra, btnDetalhes);
+            });
+        }
+
+        // Configura "Ler Online" (esconde se sem slug ou link)
+        const btnRead = card.querySelector('.btn-read');
+        if (btnRead) {
+            if (!obra.slug && !obra.linkRead) {
+                btnRead.style.display = 'none';
+            } else {
+                // evita que o clique no link dispare o openModal
+                btnRead.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // se houver linkRead externo, use ele; senão navega para leitura interna
+                    if (obra.linkRead && obra.linkRead.length > 0) {
+                        window.location.href = obra.linkRead;
+                    } else {
+                        // link já foi definido no href (rota interna)
+                        // navegamos normalmente (mesma aba)
+                        // nada a fazer aqui — deixar o href funcionar
+                    }
+                });
+            }
+        }
+
         container.appendChild(card);
     });
 
     // Se estivermos na Home, inicializa as setas
     if (slider) initSliderControls();
 }
+
 
 function initSliderControls() {
     const prevBtn = document.getElementById('prevBtn');
@@ -334,11 +462,12 @@ function updateURL() {
     const params = new URLSearchParams();
     if (state.filters.term) params.set('q', state.filters.term);
     if (state.filters.year !== 'all') params.set('year', state.filters.year);
-    if (state.filters.category !== 'all') params.set('category', state.filters.category);
-    
+    if ((state.filters.category || 'all').toLowerCase() !== 'all') params.set('category', (state.filters.category || 'all').toLowerCase());
+
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.replaceState({}, '', newUrl);
 }
+
 
 /* =========================
    MODAL SYSTEM (Dialog Nativo + A11y)
@@ -346,7 +475,7 @@ function updateURL() {
 function initModalSystem() {
     const modal = document.querySelector(CONFIG.selectors.modal);
     const closeBtn = document.querySelector(CONFIG.selectors.closeBtn);
-    
+
     if (!modal) return;
 
     // Fechar ao clicar no botão X
@@ -356,7 +485,7 @@ function initModalSystem() {
     modal.addEventListener('click', (e) => {
         const rect = modal.getBoundingClientRect();
         const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-                            rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+            rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
         if (!isInDialog) closeModal();
     });
 
@@ -417,7 +546,7 @@ function openModal(work, triggerElement) {
 
     // Lock Scroll & Focus Trap
     document.body.classList.add('no-scroll');
-    
+
     // Atualiza título da página (SEO/UX)
     document.title = `${work.title} | Mario Paulo`;
 }
@@ -437,7 +566,7 @@ function closeModal() {
 function onModalCloseCleanup() {
     document.body.classList.remove('no-scroll');
     document.title = 'Catálogo de Obras | Mario Paulo'; // Restaura título
-    
+
     // Restaura foco
     if (state.lastFocusedElement) {
         state.lastFocusedElement.focus();
@@ -467,14 +596,14 @@ function initHomeSlider(works) {
         `;
         // Ao clicar, redireciona para catálogo com filtro ou abre modal se estiver na mesma página
         card.addEventListener('click', () => {
-             window.location.href = `./html/obras-galeria.html?q=${encodeURIComponent(work.title)}`;
+            window.location.href = `./html/obras-galeria.html?q=${encodeURIComponent(work.title)}`;
         });
         container.appendChild(card);
     });
 
     // Lógica de Slider
     let startX, scrollLeft, isDown = false;
-    
+
     // Drag to scroll simples para desktop/mobile
     container.addEventListener('mousedown', (e) => {
         isDown = true;
@@ -496,8 +625,8 @@ function initHomeSlider(works) {
     const prevBtn = document.querySelector('.nav-btn.prev');
     const nextBtn = document.querySelector('.nav-btn.next');
 
-    if(prevBtn) prevBtn.addEventListener('click', () => smoothScrollSlider(container, -350));
-    if(nextBtn) nextBtn.addEventListener('click', () => smoothScrollSlider(container, 350));
+    if (prevBtn) prevBtn.addEventListener('click', () => smoothScrollSlider(container, -350));
+    if (nextBtn) nextBtn.addEventListener('click', () => smoothScrollSlider(container, 350));
 }
 
 function smoothScrollSlider(element, amount) {
@@ -518,7 +647,7 @@ function truncate(text, len) {
 }
 
 function capitalize(str) {
-    if(!str) return '';
+    if (!str) return '';
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -545,7 +674,7 @@ function setupButton(btn, link) {
 
 function debounce(func, wait) {
     let timeout;
-    return function(...args) {
+    return function (...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
