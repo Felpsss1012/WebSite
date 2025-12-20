@@ -1152,6 +1152,241 @@ body.no-scroll {
     }
 }
 
+/* ========================================================
+   ADIÇÕES: Tabs, Reviews, Estrelas, Approval badge e UI tweak
+   (insira isto APÓS o bloco do modal acima)
+   ======================================================== */
+
+/* Tabs */
+.modal-tabs {
+    display:flex;
+    gap:10px;
+    margin-top: 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.modal-tabs button {
+    background: transparent;
+    border: none;
+    padding: 10px 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: background .18s, color .18s;
+}
+
+.modal-tabs button.active {
+    color: var(--text-main);
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
+}
+
+/* Tab panes */
+.tab-pane { display: none; padding-top: 12px; }
+.tab-pane.active { display: block; }
+
+/* Reviews layout */
+.reviews-summary {
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom: 12px;
+}
+
+.review-stars {
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+/* Star visual: uses inline SVG mask (safe fallback) */
+.star {
+    width: 26px;
+    height: 26px;
+    display:inline-block;
+    background: #ffd166;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
+    opacity: 0.18;
+    transition: opacity .12s, transform .12s;
+    background-color: #ffd166;
+}
+.star.filled { opacity: 1; transform: scale(1.02); }
+
+/* Approval badge */
+.approval-badge {
+    font-weight:700;
+    background: linear-gradient(90deg,#dff7e5,#e6fbf0);
+    color: #1a7a44;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    display:inline-block;
+}
+
+/* Reviews list */
+/* === Ajustes específicos pedidos pelo usuário === */
+
+/* Reviews list: maior, com scroll quando necessário */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  max-height: 48vh;         /* quando ultrapassar isso, ativa scroll */
+  overflow-y: auto;
+  padding-right: 6px;       /* espaço para scrollbar */
+}
+
+/* Cards de review: mais espaçamento e menos compactados */
+.review-card {
+  border-radius: 10px;
+  background: #fff;
+  padding: 16px 18px;
+  border: 1px solid rgba(0,0,0,0.04);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 72px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+}
+
+/* Remove a coluna grande da nota à esquerda - o JS não mais a renderiza */
+/* Se por acaso sobrar, escondemos a coluna de rating via CSS */
+.review-card .rating-left {
+  display: none;
+}
+
+/* Comentário: mais espaço e legível */
+.review-card .comment-text {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #333;
+  margin-top: 6px;
+}
+
+/* Meta info (data) separado, menos intrusivo */
+.review-card .meta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Aumenta o gap entre os botões no modal e deixa mais arejado */
+.modal-actions { 
+  display: flex;
+  gap: 22px;          /* aumenta espaço entre Ler Online e Comprar */
+  align-items: center;
+  margin-top: 18px;
+}
+
+/* Botões: mais espaçados e com padding maior (não muito folgado) */
+.modal-actions .btn {
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+/* Ler Online -- estilo discreto, margem direita automática no mobile */
+.btn-secondary.read-inline {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: var(--text-main);
+}
+
+/* Força um pouco mais de espaço entre as áreas do modal e evita "colagem" */
+.modal-content { 
+  padding-top: 34px; 
+  padding-bottom: 34px;
+}
+
+/* Scrollbars suaves para a lista de comentários */
+.reviews-list::-webkit-scrollbar {
+  width: 10px;
+}
+.reviews-list::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.06);
+  border-radius: 8px;
+}
+
+/* Se quiser destacar o botão "Enviar" com espaço visual, este utilitário ajuda */
+.form-actions { gap: 12px !important; }
+
+/* Responsividade: reduz altura e mantém espaçamento no mobile */
+@media (max-width: 900px) {
+  .reviews-list { max-height: 40vh; gap: 12px; padding-right: 4px; }
+  .review-card { padding: 14px; min-height: 64px; }
+  .modal-actions { gap: 14px; flex-wrap: wrap; }
+}
+
+
+/* Comment form */
+.review-form {
+    margin-top: 12px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.review-form textarea {
+    width:100%;
+    min-height:84px;
+    border-radius:8px;
+    border:1px solid #e6e6e6;
+    padding:10px;
+    resize:vertical;
+    font-family:inherit;
+}
+
+.review-form .form-actions {
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+/* Button variants (small tweaks to blend with modal) */
+.btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+.btn-primary {
+    background: var(--text-main);
+    color: var(--white);
+}
+.btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.06);
+    color: var(--text-main);
+}
+
+/* small helpers */
+.modal-synopsis::-webkit-scrollbar, .modal-content::-webkit-scrollbar, .reviews-list::-webkit-scrollbar {
+    height: 8px; width: 8px;
+}
+.modal-synopsis::-webkit-scrollbar-thumb, .modal-content::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.06); border-radius: 8px;
+}
+
+/* Responsividade extra */
+@media (max-width: 900px) {
+    .modal-wrapper { grid-template-columns: 1fr; }
+    .modal-image-wrapper { height: 220px; min-height: 220px; }
+    .modal-content { padding: 18px; }
+    .review-stars .star { width: 22px; height: 22px; }
+}
+
+/* small visual polish to ensure modal content sits centered vertically */
+.modal-wrapper .modal-content { justify-content: flex-start; padding-top: 28px; padding-bottom: 28px; }
+
+/* ensure buttons in footer align right on larger screens */
+.modal-actions { margin-top: 10px; justify-content: flex-start; }
+@media(min-width:900px) {
+    .modal-actions { justify-content: flex-end; }
+}
+
+
 /* --- RESTANTE DO CSS (BIOGRAFIA, TIMELINE, ETC) --- */
 .bio-container {
     max-width: 1000px;

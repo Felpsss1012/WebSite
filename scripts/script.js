@@ -539,10 +539,22 @@ function openModal(work, triggerElement) {
 
     // Show Modal
     if (typeof modal.showModal === 'function') {
+        // Workaround: garante centralização consistente mesmo com body scrolled
+        document.body.classList.add('no-scroll'); // bloqueia scroll do body
+
+        // Mostra o modal primeiro, depois ajusta top para centro relativo à viewport atual
         modal.showModal();
+
+        // Força posicionamento central absoluto considerando scroll atual
+        const centerTop = window.scrollY + (window.innerHeight / 2);
+        modal.style.position = 'fixed';
+        modal.style.left = '50%';
+        modal.style.top = `${centerTop}px`;
+        modal.style.transform = 'translate(-50%, -50%)';
     } else {
         modal.setAttribute('open', ''); // Fallback
     }
+
 
     // Lock Scroll & Focus Trap
     document.body.classList.add('no-scroll');
@@ -679,3 +691,190 @@ function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
 }
+
+/* =========================
+   Reviews & Modal enhancements
+   - Armazena avaliações em localStorage por slug
+   - Apresenta média, % aprovação e comentários
+   ========================= */
+
+function _reviewsKey(slug) { return `mp_reviews_${slug}`; }
+
+function getReviews(slug) {
+    try {
+        return JSON.parse(localStorage.getItem(_reviewsKey(slug)) || '[]');
+    } catch { return []; }
+}
+
+function saveReviews(slug, arr) {
+    localStorage.setItem(_reviewsKey(slug), JSON.stringify(arr || []));
+}
+
+function addReview(slug, rating, comment) {
+    const arr = getReviews(slug);
+    arr.push({
+        rating: Number(rating),
+        comment: comment ? String(comment).trim() : '',
+        createdAt: new Date().toISOString()
+    });
+    saveReviews(slug, arr);
+    return arr;
+}
+
+function clearReviews(slug) {
+    localStorage.removeItem(_reviewsKey(slug));
+}
+
+/* cria N estrelas (visual) para um container */
+function renderStars(container, count, filledCount) {
+    container.innerHTML = '';
+    for (let i = 1; i <= count; i++) {
+        const s = document.createElement('span');
+        s.className = 'star' + (i <= filledCount ? ' filled' : '');
+        s.dataset.value = i;
+        container.appendChild(s);
+    }
+}
+
+/* calcula percent approval: aprovados = notas >=4 */
+function calcApproval(reviews) {
+    if (!reviews || !reviews.length) return { percent: 0, avg: 0, total: 0 };
+    const total = reviews.length;
+    const approved = reviews.filter(r => (r.rating || 0) >= 4).length;
+    const percent = Math.round((approved / total) * 100);
+    const avg = (reviews.reduce((s, r) => s + (r.rating || 0), 0) / total);
+    return { percent, avg: Math.round(avg * 10) / 10, total };
+}
+
+/* Renderiza a aba de reviews no modal */
+function renderModalReviews(work) {
+    const slug = work.slug || work.id || 'unknown';
+    const reviews = getReviews(slug);
+    const summary = calcApproval(reviews);
+
+    const starsContainer = document.getElementById('modalAvgStars');
+    const approvalEl = document.getElementById('modalApproval');
+    const votesEl = document.getElementById('modalVotes');
+    const listEl = document.getElementById('modalReviews');
+
+    // média visual (ainda mostramos as 5 estrelas preenchidas com média)
+    renderStars(starsContainer, 5, Math.round(summary.avg || 0));
+    approvalEl.textContent = reviews.length ? `${summary.percent}% aprov.` : 'Sem avaliações';
+    votesEl.textContent = reviews.length ? `${summary.total} avaliação(ões)` : '';
+
+    // lista de reviews — somente comentário + meta (sem estrelas por item)
+    listEl.innerHTML = '';
+    if (!reviews.length) {
+        listEl.innerHTML = `<div style="color:var(--text-muted)">Seja o primeiro a avaliar esta obra.</div>`;
+    } else {
+        // render maior e menos compactado
+        reviews.slice().reverse().forEach(r => {
+            const rc = document.createElement('div');
+            rc.className = 'review-card';
+
+            const date = new Date(r.createdAt).toLocaleString();
+
+            // estrutura: comentário principal (texto) + meta abaixo (data e nota opcional)
+            rc.innerHTML = `
+        <div style="flex:1">
+          <div class="comment-text">${escapeHtml(r.comment || '')}</div>
+          <div class="meta" style="margin-top:8px;">
+            <span style="font-weight:700; margin-right:8px; color:var(--text-muted);">${r.rating}★</span>
+            <span style="color:var(--text-muted);">${date}</span>
+          </div>
+        </div>
+      `;
+
+            listEl.appendChild(rc);
+        });
+    }
+
+    // Rating input (interativo) - mantém o mesmo comportamento anterior
+    const ratingInput = document.getElementById('reviewRating');
+    ratingInput.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('span');
+        star.className = 'star';
+        star.dataset.value = i;
+        star.role = 'radio';
+        star.tabIndex = 0;
+        ratingInput.appendChild(star);
+    }
+
+    // interactive handlers (reutiliza o padrão anterior)
+    let selectedRating = 0;
+    ratingInput.querySelectorAll('.star').forEach(s => {
+        s.addEventListener('click', () => {
+            selectedRating = Number(s.dataset.value);
+            ratingInput.querySelectorAll('.star').forEach(x => x.classList.toggle('filled', Number(x.dataset.value) <= selectedRating));
+        });
+        s.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); s.click(); }
+        });
+    });
+
+    // submit handler
+    const submitBtn = document.getElementById('submitReview');
+    submitBtn.onclick = () => {
+        const comment = document.getElementById('reviewComment').value;
+        if (!selectedRating) {
+            alert('Escolha uma nota de 1 a 5 estrelas antes de enviar.');
+            return;
+        }
+        const arr = addReview(slug, selectedRating, comment);
+        document.getElementById('reviewComment').value = '';
+        selectedRating = 0;
+        ratingInput.querySelectorAll('.star').forEach(x => x.classList.remove('filled'));
+        renderModalReviews(work); // rerender
+    };
+
+    const clearBtn = document.getElementById('clearReviews');
+    if (clearBtn) {
+        clearBtn.onclick = () => {
+            if (!confirm('Apagar avaliações locais desta obra?')) return;
+            clearReviews(slug);
+            renderModalReviews(work);
+        };
+    }
+}
+
+
+/* Tab switching */
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.modal-tabs button');
+    if (!btn) return;
+    const parent = btn.parentElement;
+    parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+});
+
+/* Hook: quando abrir modal, renderiza reviews e garante Ler Online */
+const _openModalOrig = openModal;
+openModal = function (work, triggerElement) {
+    _openModalOrig(work, triggerElement);
+
+    // renderiza avaliações (se existir)
+    try { renderModalReviews(work); } catch (err) { console.error('renderModalReviews error', err); }
+
+    // garante botão Ler Online visível e apontando corretamente
+    const els = {
+        btnRead: document.getElementById('btnRead'),
+    };
+    if (els.btnRead) {
+        if (work.linkRead && work.linkRead.length) {
+            els.btnRead.href = work.linkRead;
+            els.btnRead.style.display = 'inline-flex';
+            els.btnRead.target = '_blank';
+        } else if (work.slug) {
+            els.btnRead.href = `${CONFIG.routes.leitura}?obra=${encodeURIComponent(work.slug)}`;
+            els.btnRead.style.display = 'inline-flex';
+            els.btnRead.target = '_self';
+        } else {
+            els.btnRead.style.display = 'none';
+        }
+    }
+};
