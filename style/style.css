@@ -6,17 +6,14 @@
     --white: #ffffff;
     --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     --footer-bg: #1a1a1a;
-    /* Grafite profundo */
     --footer-text: #e0e0e0;
-    /* Cinza claro para leitura */
     --footer-muted: #999999;
-    /* Texto secundário */
     --footer-border: #333333;
-    /* Linhas discretas */
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Inter', sans-serif;
 }
 
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
@@ -24,7 +21,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     background-color: var(--bg-light);
     color: var(--text-main);
     line-height: 1.6;
@@ -43,7 +40,7 @@ body {
 }
 
 .logo {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-serif);
     font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -1px;
@@ -99,7 +96,7 @@ body {
 }
 
 .hero-content h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-serif);
     font-size: clamp(3rem, 8vw, 5rem);
     line-height: 1.1;
     margin-bottom: 25px;
@@ -164,7 +161,7 @@ body {
 }
 
 .trajetoria-text h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-serif);
     font-size: 2.5rem;
     margin-bottom: 30px;
 }
@@ -179,7 +176,7 @@ body {
 }
 
 .metrica-item strong {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-serif);
     font-size: 2.5rem;
     display: block;
 }
@@ -196,7 +193,6 @@ body {
     transform: scale(1.02);
 }
 
-/* Botão de texto elegante para Biografia */
 .btn-text-link {
     display: inline-block;
     margin-top: 20px;
@@ -226,14 +222,63 @@ body {
     transform: scaleX(1);
 }
 
+/* Correção do Slider da Home */
+.home-slider-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.home-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 30px;
+    padding: 20px 0;
+    /* Esconde a barra de rolagem */
+    scrollbar-width: none; 
+}
+
+.home-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.home-slider .obra-card {
+    min-width: 300px; /* Garante que fiquem lado a lado */
+    flex: 0 0 auto;
+}
+
+.slider-arrow {
+    background: var(--white);
+    border: 1px solid #eee;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+.slider-arrow:hover {
+    background: var(--accent);
+    color: white;
+}
+
 /* Ajuste no botão Ver Catálogo */
 .obras-header .btn-secondary {
+    padding: 10px 22px;
     border-color: var(--text-main);
     color: var(--text-main);
-    padding: 10px 20px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
 .obras-header .btn-secondary:hover {
+    transform: translateY(-2px);
     background: var(--text-main);
     color: #fff;
 }
@@ -252,7 +297,6 @@ body {
     cursor: pointer;
 }
 
-
 @media (max-width: 768px) {
     .obras-header {
         flex-direction: column;
@@ -266,27 +310,15 @@ body {
     }
 }
 
-
-
-.obras-header .btn-secondary {
-    transition: all 0.3s ease;
-}
-
-.obras-header .btn-secondary:hover {
-    transform: translateY(-2px);
-}
-
-
 /* --- OBRAS SLIDER --- */
 .obras {
     padding: 100px 5%;
-    background-color: #f9f7f2;
+    background-color: var(--bg-light);
     overflow: hidden;
 }
 
 .container-obras {
     max-width: 1140px;
-    /* (350px card * 3) + (30px gap * 2) aproximadamente */
     margin: 0 auto;
     position: relative;
 }
@@ -298,9 +330,8 @@ body {
     margin-bottom: 40px;
 }
 
-
 .obras-header h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-serif);
     font-size: 2.2rem;
     margin: 0;
 }
@@ -311,34 +342,22 @@ body {
     gap: 20px;
 }
 
-.obras-header .btn-secondary {
-    padding: 10px 22px;
-    border-color: var(--text-main);
-    color: var(--text-main);
-    white-space: nowrap;
-}
-
-
 .obras-wrapper {
     position: relative;
     width: 100%;
-    /* O JS controlará o overflow: hidden quando houver 4+ obras */
     transition: all 0.5s ease;
 }
 
 .obras-grid {
     display: flex;
-    /* Flex permite o movimento horizontal do slider */
     gap: 30px;
     transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     will-change: transform;
-    /* Centraliza automaticamente se houver menos de 3 cards */
     justify-content: center;
 }
 
 .obra-card {
     flex: 0 0 350px;
-    /* Largura fixa para manter o grid de 3 sempre igual */
     background: #fff;
     border-radius: 12px;
     padding: 24px;
@@ -360,7 +379,7 @@ body {
 }
 
 .obra-info h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-serif);
     margin: 10px 0;
 }
 
@@ -407,7 +426,6 @@ body {
     right: -60px;
 }
 
-/* Ajuste para telas menores que o container */
 @media (max-width: 1300px) {
     .obras-nav.prev {
         left: 10px;
@@ -425,14 +443,12 @@ body {
 @media (max-width: 768px) {
     .obra-card {
         flex: 0 0 85vw;
-        /* Mobile mostra quase um card inteiro */
     }
 
     .obras-nav {
         display: none !important;
     }
 
-    /* Mobile usa scroll natural */
     .obras-wrapper {
         overflow-x: auto !important;
     }
@@ -469,6 +485,7 @@ body {
     }
 }
 
+/* --- FOOTER --- */
 .footer-institucional {
     background-color: var(--footer-bg);
     color: var(--footer-text);
@@ -482,11 +499,9 @@ body {
     margin: 0 auto;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    /* Coluna da marca é mais larga */
     gap: 60px;
 }
 
-/* Tipografia e Títulos */
 .footer-name {
     font-family: var(--font-serif);
     font-size: 1.5rem;
@@ -510,11 +525,6 @@ body {
     color: var(--footer-muted);
     margin-bottom: 20px;
     max-width: 320px;
-}
-
-/* Links e Listas */
-.footer-address {
-    font-style: normal;
 }
 
 .footer-list {
@@ -558,11 +568,9 @@ body {
     padding-top: 20px;
 }
 
-/* Responsividade (Mobile) */
 @media (max-width: 900px) {
     .footer-container {
         grid-template-columns: 1fr;
-        /* Empilha as colunas */
         gap: 40px;
     }
 
@@ -577,8 +585,6 @@ body {
 }
 
 /* --- ESTILOS DO CATÁLOGO (OBRAS-GALERIA) --- */
-
-/* Ajuste do Header fixo para páginas internas */
 .main-header.style-fixed {
     position: relative;
     background-color: var(--bg-light);
@@ -596,79 +602,14 @@ body {
     border-bottom: 1px solid var(--text-main);
 }
 
-/* Ajuste de tamanho das capas no catálogo */
 .obra-img {
     width: 100%;
-    height: 350px; /* Define uma altura fixa para todas as capas */
-    object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+    height: 350px;
+    object-fit: cover;
     border-bottom: 1px solid #eee;
     display: block;
 }
 
-/* Ajuste específico para o card não crescer infinito */
-.obra-card {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: var(--transition);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    max-width: 300px; /* Limita a largura do card */
-    margin: 0 auto;   /* Centraliza se necessário */
-}
-
-/* Ajuste do Modal e Imagem Interna */
-.modal {
-    max-width: 800px;
-    width: 90%;
-    border: none;
-    border-radius: 12px;
-    padding: 0;
-}
-
-.modal-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-img {
-    width: 100%;
-    max-height: 400px; /* Limita a altura da imagem no modal */
-    object-fit: cover;
-}
-
-.modal-body {
-    padding: 30px;
-}
-/* Ajuste de tamanho da imagem dentro do modal */
-#workModal {
-    max-width: 600px; /* Largura máxima do modal */
-    width: 90%;
-    border: none;
-    border-radius: 12px;
-    padding: 0;
-}
-
-#modalImg {
-    width: 100%;
-    max-height: 450px; /* Limita a altura da imagem */
-    object-fit: cover; /* Mantém a proporção sem esticar */
-    display: block;
-}
-
-.modal-body {
-    padding: 25px;
-}
-
-/* Garante que os botões fiquem um ao lado do outro */
-.modal-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-/* Container Principal */
 .catalogo-main {
     padding: 60px 5% 100px 5%;
     max-width: 1400px;
@@ -695,13 +636,9 @@ body {
     margin: 0 auto;
 }
 
-/* Controles (Busca e Filtro) */
-/* --- CORREÇÃO DA BARRA DE CONTROLE --- */
-
 .catalogo-controls {
     display: flex;
     align-items: flex-end;
-    /* Alinha tudo pela base para coincidir com labels */
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 20px;
@@ -710,35 +647,27 @@ body {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* Container da busca */
 .search-box {
     position: relative;
     flex: 1;
     min-width: 300px;
 }
 
-/* Label visível (como aparece no seu print "Buscar obra") */
 .search-box label {
     display: block;
     font-size: 0.9rem;
     margin-bottom: 8px;
-    /* Espaço entre o texto e o campo */
     color: var(--text-main);
     font-weight: 500;
 }
 
-/* O Campo de Input */
 .search-box input {
     width: 100%;
     height: 48px;
-    /* Altura fixa para alinhar com os filtros */
     padding: 0 15px 0 45px;
-    /* Padding ajustado */
     border: 1px solid #ccc;
-    /* Borda mais nítida */
     border-radius: 4px;
     background-color: #fff;
-    /* Fundo branco explícito */
     font-family: var(--font-sans);
     font-size: 0.95rem;
     color: var(--text-main);
@@ -751,53 +680,39 @@ body {
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
-/* A Lupa (Ícone) */
 .search-icon {
     position: absolute;
     left: 15px;
-    /* Centralização vertical absoluta baseada na altura do input */
     bottom: 14px;
-    /* Ajuste fino baseado na altura de 48px */
     font-size: 1.1rem;
     opacity: 0.5;
     pointer-events: none;
-    /* O clique passa através do ícone */
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Container dos Filtros */
 .filters-box {
     display: flex;
     gap: 15px;
     align-items: flex-end;
-    /* Garante alinhamento com a busca */
 }
 
-/* Os Selects (Dropdowns) */
 .filters-box select {
-    /* Reset total da aparência nativa */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-
     height: 48px;
-    /* Mesma altura da busca */
     padding: 0 40px 0 15px;
-    /* Espaço na direita para a seta */
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;
-    /* Fundo branco para cobrir o azul do sistema */
     color: var(--text-main);
     font-family: var(--font-sans);
     font-size: 0.9rem;
     cursor: pointer;
     min-width: 180px;
-
-    /* Recriando a setinha via CSS (SVG) para garantir consistência */
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 15px center;
@@ -809,14 +724,12 @@ body {
     border-color: var(--text-main);
 }
 
-/* Grid do Catálogo */
 .catalogo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 40px;
 }
 
-/* Card Individual (Reutiliza base, mas simplifica para catálogo) */
 .cat-card {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.03);
@@ -897,60 +810,157 @@ body {
     display: none !important;
 }
 
+.modal-close-btn:focus,
+.modal-actions a:focus {
+    outline: 3px solid #000;
+    outline-offset: 2px;
+}
+
+/* Impede o scroll do site quando o modal está aberto */
+body.no-scroll {
+    overflow: hidden;
+}
+
+/* Modal: Melhorias de UX e Acessibilidade */
+#obraModal {
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    max-width: 850px;
+    width: 90%;
+    margin: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+#obraModal::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(3px);
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    max-height: 85vh;
+}
+
+.modal-img-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.modal-text-side {
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-synopsis-container {
+    margin: 20px 0;
+    line-height: 1.7;
+    color: var(--text-muted);
+}
+
+/* Reader View (Simples, integrado na galeria) */
+.reader-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--white);
+    z-index: 2000;
+    display: none; /* Ativado via JS */
+    overflow-y: auto;
+}
+
+.reader-content {
+    max-width: 720px;
+    margin: 100px auto;
+    padding: 0 20px;
+    font-family: 'Georgia', serif; /* Fonte editorial */
+    font-size: 1.15rem;
+    line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+    .modal-grid { grid-template-columns: 1fr; }
+    .modal-img-side { height: 250px; }
+}
+
 /* --- MODAL (DIALOG) --- */
 .obra-modal {
     border: none;
     padding: 0;
     border-radius: 12px;
+    width: min(94%, 900px);
     max-width: 900px;
-    width: 90%;
+    max-height: 90vh;
+    /* garante que não exceda a viewport */
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
     background: var(--bg-light);
+    position: fixed !important;
+    /* força comportamento consistente */
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0;
+    overflow: hidden;
+    z-index: 10000;
+    /* garante estar acima de header fixo */
 }
 
+/* Backdrop estético */
 .obra-modal::backdrop {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
 }
 
+/* Conteúdo interno do modal */
 .modal-wrapper {
     position: relative;
     display: flex;
     flex-direction: row;
+    align-items: stretch;
     overflow: hidden;
+    width: 100%;
+    max-height: calc(90vh - 24px);
 }
 
 .modal-close-btn {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 12px;
+    right: 12px;
     background: transparent;
     border: none;
-    font-size: 2rem;
+    font-size: 1.9rem;
     color: var(--text-main);
     cursor: pointer;
-    z-index: 10;
+    z-index: 20;
     line-height: 1;
+    padding: 6px;
 }
 
 .modal-image-wrapper {
-    flex: 1;
+    flex: 1 1 45%;
     background: #e5e5e5;
-    min-height: 400px;
+    min-height: 320px;
+    display: block;
 }
 
 .modal-image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 .modal-content {
-    flex: 1.2;
-    padding: 50px;
+    flex: 1.2 1 55%;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: auto;
 }
 
 .meta-tag {
@@ -968,9 +978,9 @@ body {
 
 .modal-info h2 {
     font-family: var(--font-serif);
-    font-size: 2.5rem;
-    line-height: 1.1;
-    margin-bottom: 25px;
+    font-size: 2rem;
+    line-height: 1.12;
+    margin-bottom: 20px;
     color: var(--text-main);
 }
 
@@ -979,8 +989,8 @@ body {
     font-size: 1rem;
     line-height: 1.7;
     color: #444;
-    margin-bottom: 40px;
-    max-height: 300px;
+    margin-bottom: 24px;
+    max-height: 40vh;
     overflow-y: auto;
 }
 
@@ -989,42 +999,38 @@ body {
     gap: 15px;
 }
 
-/* Responsividade do Catálogo e Modal */
+/* MOBILE: empilha conteúdo e ajusta paddings/alturas */
 @media (max-width: 900px) {
-    .catalogo-controls {
-        flex-direction: column;
-    }
-
-    .filters-box {
-        width: 100%;
-    }
-
-    .filters-box select {
-        flex: 1;
-    }
-
     .modal-wrapper {
         flex-direction: column;
-        max-height: 90vh;
-        overflow-y: auto;
+        max-height: 92vh;
     }
 
     .modal-image-wrapper {
-        height: 250px;
+        width: 100%;
+        height: 220px;
+        min-height: 220px;
         flex: none;
     }
 
     .modal-content {
-        padding: 30px 20px;
+        padding: 20px;
     }
 
     .modal-info h2 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+    }
+
+    .obra-modal {
+        width: calc(100% - 24px);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 10px;
     }
 }
 
-/* --- PÁGINA DE BIOGRAFIA (AUTOR.HTML) --- */
-
+/* --- RESTANTE DO CSS (BIOGRAFIA, TIMELINE, ETC) --- */
 .bio-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -1033,10 +1039,9 @@ body {
     color: var(--text-main);
 }
 
-/* 1. Intro */
 .bio-intro {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr; /* Texto ocupa mais espaço que a foto */
+    grid-template-columns: 1.2fr 0.8fr;
     gap: 60px;
     align-items: center;
     margin-bottom: 80px;
@@ -1068,21 +1073,20 @@ body {
     width: 100%;
     height: auto;
     border-radius: 4px;
-    filter: grayscale(100%); /* Mantém a sobriedade */
+    filter: grayscale(100%);
     transition: filter 0.5s ease;
 }
 
 .bio-portrait img:hover {
-    filter: grayscale(0%); /* Cor suave no hover */
+    filter: grayscale(0%);
 }
 
 .divider-subtle {
     border: 0;
-    border-top: 1px solid rgba(0,0,0,0.08);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
     margin: 60px 0;
 }
 
-/* 2. Seções Gerais */
 .bio-section {
     margin-bottom: 80px;
 }
@@ -1092,11 +1096,10 @@ body {
     font-size: 1.8rem;
     margin-bottom: 30px;
     padding-bottom: 15px;
-    border-bottom: 2px solid var(--text-main); /* Linha sólida institucional */
+    border-bottom: 2px solid var(--text-main);
     display: inline-block;
 }
 
-/* 3. Trajetória (Timeline Visual) */
 .timeline-block {
     display: grid;
     grid-template-columns: 150px 1fr;
@@ -1122,7 +1125,6 @@ body {
     margin: 0;
 }
 
-/* 4. Produção (Grid) */
 .research-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1156,15 +1158,16 @@ body {
     color: var(--text-muted);
 }
 
-/* 5. Reconhecimento */
 .fact-list {
     list-style: none;
     border-left: 2px solid #eee;
 }
+
 .fact-list li {
     padding: 10px 0 10px 20px;
     position: relative;
 }
+
 .fact-list li::before {
     content: "";
     position: absolute;
@@ -1177,7 +1180,6 @@ body {
     border-radius: 50%;
 }
 
-/* 6. Colaboradores */
 .section-desc {
     margin-bottom: 30px;
     color: var(--text-muted);
@@ -1219,7 +1221,6 @@ body {
     line-height: 1.5;
 }
 
-/* 7. Declaração */
 .bio-statement {
     text-align: center;
     padding: 60px 10%;
@@ -1236,26 +1237,25 @@ body {
     line-height: 1.5;
 }
 
-/* Responsividade */
 @media (max-width: 900px) {
     .bio-intro {
-        grid-template-columns: 1fr; /* Empilha foto e texto */
+        grid-template-columns: 1fr;
         text-align: center;
         gap: 30px;
     }
-    
+
     .bio-intro h1 {
         font-size: 2.5rem;
     }
 
     .bio-portrait {
-        order: -1; /* Joga a foto para cima no mobile */
+        order: -1;
         max-width: 300px;
         margin: 0 auto;
     }
 
     .timeline-block {
-        grid-template-columns: 1fr; /* Remove a coluna lateral */
+        grid-template-columns: 1fr;
         gap: 5px;
     }
 
@@ -1266,7 +1266,7 @@ body {
         color: var(--text-main);
         font-size: 1rem;
     }
-    
+
     .research-grid {
         grid-template-columns: 1fr;
     }

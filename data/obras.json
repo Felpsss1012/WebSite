@@ -1,0 +1,13 @@
+[
+  {
+    "_id": "fb1",
+    "titulo": "Revelações Ecológicas",
+    "slug": "revelacoes-ecologicas",
+    "image": "../img/capa-livro-eco.jpeg",
+    "sinopse": "",
+    "leitura_online": "#",
+    "linkAmazon": "https://amazon.com.br",
+    "release_date": "2025-12-20",
+    "categoria": "ensinamento"
+  }
+]

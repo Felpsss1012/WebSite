@@ -1,2 +1,2 @@
 cd mario-paulo-
-run dev 
+npm run dev 

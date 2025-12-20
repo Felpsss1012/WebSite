@@ -45,10 +45,6 @@
 
                 <select id="filterCategory" aria-label="Filtrar por categoria">
                     <option value="all">Todas as Categorias</option>
-                    <option value="romance">Romance</option>
-                    <option value="ensaio">Ensaio</option>
-                    <option value="cronica">Crônica</option>
-                    <option value="artigo">Artigo Acadêmico</option>
                 </select>
             </div>
         </section>
@@ -56,23 +52,27 @@
         <section class="catalogo-grid-section">
             <div id="obrasGrid" class="catalogo-grid">
             </div>
+
             <div id="noResults" class="no-results hidden">
                 <p>Nenhuma obra encontrada com os critérios selecionados.</p>
             </div>
         </section>
     </main>
 
-    <dialog id="obraModal" class="obra-modal">
+    <dialog id="obraModal" class="obra-modal" aria-labelledby="modalTitle" aria-modal="true">
         <div class="modal-wrapper">
-            <button id="closeModal" class="modal-close-btn" aria-label="Fechar">&times;</button>
-            <div class="modal-content">
-                <figure class="modal-image-wrapper">
-                    <img id="modalImg" src="" alt="">
-                </figure>
-                <article class="modal-info">
+            <button id="closeModal" class="modal-close-btn" aria-label="Fechar Modal">&times;</button>
+
+            <figure class="modal-image-wrapper">
+                <img id="modalImg" src="" alt="">
+            </figure>
+
+            <article class="modal-content">
+                <div class="modal-info">
                     <header>
-                        <span id="modalYear" class="meta-tag"></span>
                         <span id="modalCategory" class="meta-tag"></span>
+                        <span id="modalYear" class="meta-tag"
+                            style="background:transparent; padding-left:0; font-weight:600;"></span>
                         <h2 id="modalTitle"></h2>
                     </header>
                     <div class="modal-synopsis">
@@ -82,8 +82,8 @@
                         <a id="btnRead" href="#" target="_blank" class="btn btn-secondary">Ler Online</a>
                         <a id="btnBuy" href="#" target="_blank" class="btn btn-primary">Adquirir na Amazon</a>
                     </footer>
-                </article>
-            </div>
+                </div>
+            </article>
         </div>
     </dialog>
 
@@ -94,30 +94,6 @@
                 <p class="footer-description">Investigação literária sobre cultura, território e a experiência humana.
                 </p>
                 <p class="footer-copyright">© 2024 Mario Paulo. Todos os direitos reservados.</p>
-            </div>
-
-            <div class="footer-col">
-                <h3 class="footer-title">Contato Institucional</h3>
-                <address class="footer-address">
-                    <a href="mailto:contato@mariopaulo.com.br" class="footer-link">contato@mariopaulo.com.br</a>
-                    <div class="footer-social">
-                        <a href="#" class="footer-link">LinkedIn</a>
-                        <span class="separator">/</span>
-                        <a href="#" class="footer-link">Instagram</a>
-                    </div>
-                </address>
-            </div>
-
-            <div class="footer-col">
-                <h3 class="footer-title">Informações</h3>
-                <nav class="footer-nav">
-                    <ul class="footer-list">
-                        <li><a href="../index.html#sobre" class="footer-link">Sobre o Autor</a></li>
-                        <li><a href="../index.html#obras" class="footer-link">Obras Publicadas</a></li>
-                        <li><a href="/politica-de-privacidade" class="footer-link">Política de Privacidade</a></li>
-                        <li><a href="/termos-de-uso" class="footer-link">Termos de Uso</a></li>
-                    </ul>
-                </nav>
             </div>
         </div>
     </footer>
