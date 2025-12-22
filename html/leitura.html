@@ -1,51 +1,161 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leitura Online | Mario Paulo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- Preconnect para fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS: base primeiro, específico por último -->
     <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/leitura.css">
 </head>
+
 <body class="bg-light">
+
     <header class="main-header style-fixed">
-        <div class="logo"><a href="../index.html">Mario <span>Paulo</span></a></div>
-        <nav><ul class="nav-links">
-            <li><a href="obras-galeria.html">Voltar ao Catálogo</a></li>
-        </ul></nav>
+        <div class="logo"><a href="../index.html" style="color:inherit; text-decoration:none;">Mario
+                <span>Paulo</span></a></div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="obras-galeria.html" class="active">Voltar pro Catálogo</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main id="readerApp">
+        <!-- Loader inicial -->
         <div id="loader" style="text-align:center; padding: 100px;">Carregando obra...</div>
 
-        <div id="mainContent" class="reader-container hidden" style="display:none;">
+        <!-- Conteúdo principal (inicialmente escondido; JS deve remover 'hidden' quando pronto) -->
+        <div id="mainContent" class="reader-container hidden" aria-hidden="true">
             <aside class="reader-sidebar">
-                <img id="bookCover" src="" alt="" class="book-mini-cover">
-                <h1 id="bookTitle" style="font-family: var(--font-serif); font-size: 1.5rem;"></h1>
+                <!-- Capa/mini-capa -->
+                <img id="bookCover" src="" alt="Capa do livro — pré-visualização" class="book-mini-cover" loading="lazy"
+                    width="200" height="300">
+
+                <!-- Título e sinopse -->
+                <h1 id="bookTitle" style="font-family: var(--font-serif); font-size: 1.5rem; margin:0;"></h1>
                 <p id="bookSynopsis" style="font-size: 0.85rem; color: #666; margin: 10px 0;"></p>
-                <a id="amazonLink" href="#" target="_blank" class="btn-primary" style="display:block; text-align:center; padding: 10px; font-size: 0.8rem;">Comprar Livro Completo</a>
-                
-                <nav>
+
+                <!-- Link de compra — abre em nova aba com segurança -->
+                <a id="amazonLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary"
+                    style="display:block; text-align:center; padding: 10px; font-size: 0.8rem;">Comprar Livro
+                    Completo</a>
+
+                <!-- Lista de capítulos (semântica: lista) -->
+                <nav aria-label="Lista de capítulos">
                     <ul id="chapterList" class="chapter-nav"></ul>
                 </nav>
             </aside>
 
             <article class="reading-area">
                 <div class="reading-content">
-                    <h2 id="currentChapterTitle">Selecione um capítulo</h2>
-                    <div id="textContent" class="reading-text">
-                        Aguardando seleção...
+                    <!-- === PDF Viewer === -->
+                    <div id="pdfWrapper" class="pdf-wrapper hidden" aria-live="polite" aria-busy="true">
+                        <div
+                            style="display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap;">
+
+                            <div id="pdfViewport"
+                                style="max-width:760px; width:100%; display:flex; justify-content:center;">
+                                <!-- canvas onde o pdf será renderizado -->
+                                <canvas id="pdfCanvas" role="img" aria-label="Leitor de PDF" width="760"
+                                    height="980"></canvas>
+                            </div>
+                            <button id="pdfPrev" class="pdf-nav" type="button" aria-label="Página anterior"
+                                title="Página anterior">◀</button>
+                            <button id="pdfNext" class="pdf-nav" type="button" aria-label="Próxima página"
+                                title="Próxima página">▶</button>
+                        </div>
+
+                        <!-- info de pagina -->
+                        <div id="pdfPageInfo" aria-live="polite" style="margin-top:10px; font-size:0.95rem;"></div>
+
+                        <!-- Mensagem de erro (hidden por padrão; exibir via JS em caso de falha) -->
+                        <div id="pdfError" class="hidden" role="alert" aria-live="assertive"
+                            style="margin-top:12px; color:#b0342c;">Não foi possível carregar o PDF. <a href="#"
+                                rel="noopener noreferrer">Baixe o trecho</a>.</div>
                     </div>
-                    
-                    <div class="cta-box">
+                    <!-- === Fim PDF Viewer === -->
+
+                    <!-- Reviews (apresentadas após a leitura) -->
+                    <section id="reviewsSection" style="margin-top:28px;">
+                        <h3 style="font-family:var(--font-serif); margin-bottom:8px;">Avaliações</h3>
+                        <div id="reviewsSummary" class="reviews-summary" aria-live="polite">
+                            <div id="reviewsAvgStars" aria-hidden="false"></div>
+                            <div id="reviewsApproval" class="approval-badge" aria-hidden="false"></div>
+                            <div id="reviewsCount" style="margin-left:8px; color:var(--text-muted);"
+                                aria-hidden="false"></div>
+                        </div>
+                        <div id="reviewsList" class="reviews-list" style="margin-top:12px;"></div>
+                    </section>
+
+                    <div class="cta-box" style="margin-top:18px; text-align:center;">
                         <p>Gostou deste trecho? A jornada completa continua na edição impressa.</p>
-                        <a id="ctaAmazon" href="#" target="_blank" class="btn-tag" style="margin-top:15px; display:inline-block;">Adquirir Obra na Amazon</a>
+                        <a id="ctaAmazon" href="#" target="_blank" rel="noopener noreferrer" class="btn-tag"
+                            style="margin-top:15px; display:inline-block;">Adquirir Obra na Amazon</a>
                     </div>
                 </div>
             </article>
         </div>
     </main>
 
-    <script src="../scripts/leitura.js"></script>
+    <footer class="footer-institucional" id="contato">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h2 class="footer-name">Mario Paulo</h2>
+                <p class="footer-description">Investigação literária sobre cultura, território e a experiência humana.
+                </p>
+                <p class="footer-copyright">© 2024 Mario Paulo. Todos os direitos reservados.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Contato Institucional</h3>
+                <address class="footer-address">
+                    <a href="mailto:mario.martins4@etec.sp.gov.br" class="footer-link" target="_blank"
+                        rel="noopener noreferrer">mario.martins4@etec.sp.gov.br</a>
+                    <div class="footer-social">
+                        <a href="#" class="footer-link">LinkedIn</a>
+                        <span class="separator">/</span>
+                        <a href="#" class="footer-link">Instagram</a>
+                    </div>
+                </address>
+            </div>
+
+            <div class="footer-col">
+                <h3 class="footer-title">Informações</h3>
+                <nav class="footer-nav">
+                    <ul class="footer-list">
+                        <li><a href="../index.html#sobre" class="footer-link">Sobre o Autor</a></li>
+                        <li><a href="../index.html#obras" class="footer-link">Obras Publicadas</a></li>
+                        <li><a href="/politica-de-privacidade" class="footer-link">Política de Privacidade</a></li>
+                        <li><a href="/termos-de-uso" class="footer-link">Termos de Uso</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PDF.js (CDN) - sem integrity para evitar erro em ambientes sem suporte -->
+    <script src="https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
+    <script>
+        // configura worker (usa o mesmo CDN)
+        if (window['pdfjsLib']) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
+        }
+    </script>
+
+    <!-- Script da página (mantive o mesmo path). 'defer' garante execução segura -->
+    <script src="../scripts/leitura.js" defer></script>
 </body>
+
 </html>

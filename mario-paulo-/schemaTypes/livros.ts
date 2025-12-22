@@ -35,7 +35,7 @@ export default defineType({
       options: { hotspot: true },
       group: 'principal'
     }),
-    
+
     /* --- NOVO: CATEGORIAS --- */
     defineField({
       name: 'categorias',
@@ -99,10 +99,21 @@ export default defineType({
       group: 'conteudo'
     }),
     defineField({
+      name: 'arquivoPDF',
+      title: 'Livro em PDF (Leitura Online)',
+      description: 'Upload do livro completo em PDF. Só será exibido se "Leitura Gratuita" estiver ativa.',
+      type: 'file',
+      options: {
+        accept: 'application/pdf'
+      },
+      group: 'conteudo'
+    }),
+    defineField({
       name: 'capitulos',
       title: 'Capítulos',
       type: 'array',
       group: 'conteudo',
+      hidden: ({ document }) => !!document?.arquivoPDF,
       of: [{
         type: 'object',
         // Visualização do item na lista
@@ -120,19 +131,19 @@ export default defineType({
           }
         },
         fields: [
-          { 
-            name: 'ordem', 
-            title: 'Ordem Numérica', 
+          {
+            name: 'ordem',
+            title: 'Ordem Numérica',
             type: 'number',
             description: 'Use para forçar a ordenação (1, 2, 3...)'
           },
           { name: 'nome', title: 'Título do Capítulo', type: 'string' },
           { name: 'conteudo', title: 'Conteúdo do Capítulo', type: 'text' }, // Mantenha text ou mude para blockContent se quiser rich text
-          { 
-            name: 'disponivel', 
-            title: 'Disponível para Leitura Online?', 
-            type: 'boolean', 
-            initialValue: false 
+          {
+            name: 'disponivel',
+            title: 'Disponível para Leitura Online?',
+            type: 'boolean',
+            initialValue: false
           }
         ]
       }]
@@ -154,6 +165,14 @@ export default defineType({
       group: 'sistema'
     }),
     defineField({
+      name: 'gratuito',
+      title: 'Leitura Gratuita?',
+      description: 'Se ativo, o livro poderá ser lido online (capítulos ou PDF).',
+      type: 'boolean',
+      initialValue: false,
+      group: 'sistema'
+    }),
+    defineField({
       name: 'visivel',
       title: 'Visível no Site?',
       description: 'Desative para esconder o livro do site sem excluí-lo do banco de dados.',
@@ -172,10 +191,12 @@ export default defineType({
     },
     prepare(selection) {
       const { title, subtitle, media, visivel } = selection
+      const isHidden = visivel === false
+
       return {
         title: title,
-        subtitle: `${subtitle ? subtitle.split('-')[0] : 'S/ Data'} ${visivel ? '' : '(Oculto)'}`,
-        media: media
+        subtitle: `${subtitle ? subtitle.split('-')[0] : 'S/ Data'} ${isHidden ? '(Oculto)' : ''}`,
+        media
       }
     }
   }

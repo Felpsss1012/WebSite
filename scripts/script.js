@@ -46,7 +46,7 @@ const SANITY_QUERY = `
   linkAmazon,
   dataLancamento,
   "image": capa.asset->url,
-  "categorias": categorias[]->title,
+  "categorias": categorias[]->titulo, 
   status
 }
 `;
@@ -542,15 +542,16 @@ function openModal(work, triggerElement) {
         // Workaround: garante centralização consistente mesmo com body scrolled
         document.body.classList.add('no-scroll'); // bloqueia scroll do body
 
-        // Mostra o modal primeiro, depois ajusta top para centro relativo à viewport atual
+        // Mostra o modal e garante centralização relativa à viewport
         modal.showModal();
 
-        // Força posicionamento central absoluto considerando scroll atual
-        const centerTop = window.scrollY + (window.innerHeight / 2);
+        // Garantias extras de posicionamento (CSS já faz isso, mas reforçamos via JS para consistência cross-browser)
         modal.style.position = 'fixed';
         modal.style.left = '50%';
-        modal.style.top = `${centerTop}px`;
+        modal.style.top = '50%';
         modal.style.transform = 'translate(-50%, -50%)';
+        modal.style.zIndex = '10000';
+
     } else {
         modal.setAttribute('open', ''); // Fallback
     }

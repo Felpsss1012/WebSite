@@ -1,0 +1,392 @@
+/* leitura.css — Versão refeita e responsiva
+   Substituir totalmente o arquivo atual por este conteúdo.
+   Mantive todos os IDs e classes existentes no HTML. */
+
+/* ===================== VARIÁVEIS ===================== */
+:root{
+  --bg: #ffffff;
+  --page-bg: #f7f8fb;
+  --muted: #6b6b75;
+  --accent: #0b79ff;             /* azul principal (botão) */
+  --accent-2: #e6f2ff;
+  --card-shadow: 0 20px 40px rgba(11,121,255,0.06);
+  --soft-shadow: 0 8px 20px rgba(20,20,30,0.06);
+  --glass: rgba(255,255,255,0.6);
+  --radius: 14px;
+  --reader-width: 560px;         /* largura do "livro" no desktop */
+  --max-width: 1200px;
+  --text-main: #11121a;
+  --transition: 220ms cubic-bezier(.2,.9,.3,1);
+  --focus: 3px solid rgba(11,121,255,0.16);
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --font-serif: 'Playfair Display', serif;
+  --mobile-break: 992px;
+}
+
+/* ===================== RESET BASE ===================== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background: var(--page-bg);
+  color:var(--text-main);
+  font-family:var(--font-sans);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  -webkit-text-size-adjust:100%;
+  line-height:1.45;
+  -webkit-font-variant-ligatures: none;
+}
+
+/* links e utilitários */
+a{color:var(--accent); text-decoration:none}
+.hidden{display:none !important}
+
+/* ===================== LAYOUT PRINCIPAL ===================== */
+main#readerApp{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding: 40px 20px 80px;
+}
+
+/* Container central com 3 colunas (sidebar, leitura, coluna direita) */
+.reader-container{
+  width:100%;
+  max-width: var(--max-width);
+  display:grid;
+  grid-template-columns: 260px 1fr 220px;
+  gap:32px;
+  align-items:start;
+  margin: 8px auto;
+}
+
+/* adaptador para usar quando JS esconde o mainContent: manter estrutura centralizada */
+#mainContent.hidden{display:none}
+
+/* ===================== SIDEBAR ESQUERDA ===================== */
+.reader-sidebar{
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  align-items:flex-start;
+}
+
+/* mini capa */
+.book-mini-cover{
+  width:100%;
+  max-width:200px;
+  border-radius:10px;
+  box-shadow:var(--soft-shadow);
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  object-fit:cover;
+  display:block;
+}
+
+/* título e sinopse */
+#bookTitle{
+  font-family:var(--font-serif);
+  font-size:1.15rem;
+  margin:10px 0 4px;
+  color:var(--text-main);
+}
+
+#bookSynopsis{
+  font-size:0.92rem;
+  color:var(--muted);
+  line-height:1.35;
+  margin-bottom:8px;
+}
+
+/* botão comprar na sidebar */
+.btn-primary{
+  display:inline-block;
+  padding:10px 14px;
+  border-radius:999px;
+  background:linear-gradient(180deg,var(--accent),#0066d6);
+  color:#fff;
+  font-weight:700;
+  text-align:center;
+  box-shadow: 0 10px 28px rgba(11,121,255,0.12);
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  width:100%;
+  max-width:220px;
+}
+
+.btn-primary:hover{ transform: translateY(-4px); box-shadow: 0 18px 40px rgba(11,121,255,0.14); }
+.btn-primary:active{ transform: translateY(-1px); }
+
+/* lista de capítulos */
+.chapter-nav{
+  list-style:none;
+  padding:0;
+  margin:6px 0 0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  width:100%;
+}
+
+.chapter-nav li{ width:100% }
+.chapter-nav button{
+  width:100%;
+  background: #fff;
+  border: 1px solid rgba(16,16,24,0.04);
+  padding:10px 12px;
+  border-radius:10px;
+  text-align:left;
+  cursor:pointer;
+  font-weight:600;
+  color:var(--text-main);
+  transition: background var(--transition), transform var(--transition);
+  box-shadow: 0 6px 16px rgba(20,20,30,0.02);
+  font-size:0.95rem;
+}
+.chapter-nav button:hover{ transform: translateY(-3px); background: #fbfbff }
+.chapter-nav button.active{
+  background: linear-gradient(90deg, rgba(11,121,255,0.06), rgba(11,121,255,0.02));
+  border-color: rgba(11,121,255,0.12);
+  box-shadow: 0 8px 26px rgba(11,121,255,0.04);
+}
+
+/* ===================== ÁREA DE LEITURA (CENTRO) ===================== */
+.reading-area{
+  display:flex;
+  flex-direction:column;
+  align-items:center; /* centraliza leitor */
+  justify-content:flex-start;
+  gap:6px;
+  padding:6px 12px;
+}
+
+/* conteúdo interno centralizado com width controlada */
+.reading-content{
+  width:100%;
+  max-width:980px;
+  padding: 6px 10px;
+}
+
+/* título do capítulo */
+#currentChapterTitle{
+  font-family:var(--font-serif);
+  font-size:1.5rem;
+  margin:6px 0 6px;
+  color:var(--text-main);
+}
+
+/* texto curto (quando não há pdf, ex: "Aguardando seleção...") */
+.reading-text{
+  color:var(--muted);
+  margin-bottom:10px;
+}
+
+/* CTA abaixo do leitor */
+.cta-box{ margin-top:18px; text-align:center; color:var(--muted) }
+.cta-box .btn-tag{
+  display:inline-block;
+  margin-top:10px;
+  padding:10px 16px;
+  border-radius:999px;
+  background:var(--accent-2);
+  color:var(--accent);
+  font-weight:700;
+  text-decoration:none;
+}
+
+/* ===================== CARTÃO DO PDF / LEITOR ===================== */
+.pdf-wrapper{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  margin: 20px auto;
+}
+
+/* viewport: mantém o canvas centralizado e responsivo */
+#pdfViewport{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* O "canvas" visual do livro — renderiza bonito como cartão */
+#pdfCanvas{
+  width:100%;
+  max-width: var(--reader-width);
+  height:auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  display:block;
+  border: 1px solid rgba(12,12,20,0.04);
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+  padding: 22px 18px; /* se estiver usando canvas real, padding não afeta; serve caso seja img */
+}
+
+/* controles de navegação do pdf */
+.pdf-controls{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  align-items:center;
+  margin-top:6px;
+}
+
+.pdf-nav{
+  background:#fff;
+  border:1px solid rgba(16,16,24,0.06);
+  padding:8px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  box-shadow: 0 6px 18px rgba(20,20,30,0.02);
+  transition: transform var(--transition);
+}
+.pdf-nav:hover{ transform: translateY(-4px) }
+
+/* informação de página */
+#pdfPageInfo{
+  font-size:0.95rem;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+/* ===================== COLUNA DIREITA (ESPAÇO EXTRA / AVALIAÇÕES) ===================== */
+.reader-container > div:nth-child(3){
+  min-height:120px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:10px;
+}
+
+/* Avaliações (reviews) */
+.reviews-summary{ display:flex; gap:12px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
+.review-stars{ display:flex; gap:6px; align-items:center; }
+
+/* estrela simples utilizando background amarelo e máscara via svg */
+.star{
+  width:22px; height:22px;
+  display:inline-block;
+  background:#ffd966;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
+  opacity:0.18;
+}
+.star.filled{ opacity:1; transform:scale(1.03); }
+
+/* badge aprovação */
+.approval-badge{
+  font-weight:700;
+  background:linear-gradient(90deg,#e9fbf2,#f0f9f7);
+  color:#1a7a44;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:0.9rem;
+  display:inline-block;
+}
+
+/* lista de reviews */
+.reviews-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin-top:6px;
+  max-height:46vh;
+  overflow-y:auto;
+  padding-right:6px;
+}
+
+/* cards de review */
+.review-card{
+  border-radius:10px;
+  background:#fff;
+  padding:14px 16px;
+  border:1px solid rgba(12,12,20,0.04);
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  box-shadow:var(--soft-shadow);
+}
+
+/* metadados */
+.review-card .meta{ font-size:0.85rem; color:var(--muted) }
+.review-card .comment-text{ font-size:0.96rem; color:#222; line-height:1.5 }
+
+/* scrollbar suave */
+.reviews-list::-webkit-scrollbar{ width:10px }
+.reviews-list::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.06); border-radius:8px }
+
+/* ===================== ACESSIBILIDADE E FOCOS ===================== */
+button:focus, .chapter-nav button:focus, .pdf-nav:focus, .btn-primary:focus{
+  outline: var(--focus);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
+/* ===================== TRANSIÇÕES E MICRO-ANIMAÇÕES ===================== */
+#pdfCanvas, .book-mini-cover, .chapter-nav button, .btn-primary{
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+}
+
+/* ===================== RESPONSIVIDADE ===================== */
+@media (max-width: 1200px){
+  :root{ --reader-width: 520px; }
+  .reader-container{ grid-template-columns: 220px 1fr 180px; gap:24px; }
+  .book-mini-cover{ max-width: 170px; }
+}
+
+@media (max-width: 992px){ /* tablet/phone layout — empilha e centraliza */
+  :root{ --reader-width: 640px; }
+  .reader-container{
+    grid-template-columns: 1fr;
+    max-width: 920px;
+    padding: 0 18px;
+  }
+
+  .reader-sidebar{
+    order:1;
+    width:100%;
+    flex-direction:row;
+    gap:12px;
+    align-items:center;
+    padding:12px 0;
+  }
+  .book-mini-cover{ max-width:120px; margin-right:12px }
+  .reading-area{ order:2; padding: 0 6px }
+  .reader-container > div:nth-child(3){ display:none } /* remove a coluna direita para mobile */
+  .pdf-wrapper{ margin:12px auto; width:100%; max-width:var(--reader-width) }
+  #pdfCanvas{ border-radius:12px }
+  .reviews-list{ max-height:34vh }
+}
+
+@media (max-width: 480px){
+  :root{ --reader-width: 320px; }
+  #currentChapterTitle{ font-size:1.05rem }
+  .chapter-nav button{ padding:8px 10px; font-size:0.92rem }
+  .btn-primary{ padding:9px 10px; font-size:0.85rem; max-width:100% }
+  .book-mini-cover{ display:block; max-width:100px }
+  .review-card{ padding:12px }
+  .reviews-list{ max-height:28vh }
+}
+
+/* ===================== POLISH EXTRA (pequenos toques estéticos) ===================== */
+
+/* leve elevação ao passar o mouse no cartão do livro */
+#pdfCanvas:hover{ transform: translateY(-4px); filter: saturate(1.01) }
+
+/* pequena diferenciação do texto "aguardando" */
+.reading-text { font-size:0.98rem; color:var(--muted); }
+
+/* garantir que o loader seja visível e centralizado no início */
+#loader{ color:var(--muted); font-weight:600 }
+
+/* evita que o footer encoste no leitor em telas curtas */
+.footer-institucional{ margin-top:40px }
+
+/* fim do arquivo */
