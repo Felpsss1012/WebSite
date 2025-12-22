@@ -119,24 +119,15 @@ body {
     display: inline-block;
 }
 
-.btn-primary {
-    background: var(--white);
-    color: var(--text-main);
-}
-
 .btn-primary:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.btn-secondary {
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: var(--white);
-    margin-left: 15px;
+    background: #f0f0f0; /* Um branco levemente acinzentado no hover */
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #333333; /* Cinza mais escuro no hover */
+    border-color: #333333;
 }
 
 /* --- TRAJETÓRIA --- */
@@ -1393,14 +1384,16 @@ body.no-scroll {
 }
 
 .btn-primary {
-    background: var(--text-main);
-    color: var(--white);
+    background: var(--white); /* Botão da esquerda: Branco */
+    color: var(--text-main);
+    border: 1px solid var(--white);
 }
 
 .btn-secondary {
-    background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    color: var(--text-main);
+    background: #4a4a4a; /* Botão da direita: Cinza */
+    color: var(--white);
+    border: 1px solid #4a4a4a;
+    margin-left: 15px;
 }
 
 /* small helpers */
