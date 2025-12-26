@@ -879,3 +879,23 @@ openModal = function (work, triggerElement) {
         }
     }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    const revealImages = document.querySelectorAll('.img-reveal');
+
+    if (revealImages.length) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    console.log("Imagem visível:", entry.target);  // Verifica se a imagem foi detectada
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target);  // Para de observar após adicionar a classe
+                }
+            });
+        }, { threshold: 0.5 });  // A imagem será considerada visível quando 50% dela estiver na tela
+
+        revealImages.forEach(img => {
+            observer.observe(img);
+        });
+    }
+});

@@ -1,34 +1,46 @@
 :root {
     --bg-light: #f9f7f2;
     --text-main: #1a1a1a;
-    --text-muted: #555;
-    --accent: #2d3436;
+    --text-muted: #666;
+    --gold-matte: #b08b4f;
+    --bronze-matte: #8c6a3a;
+    --accent: var(--bronze-matte);
     --white: #ffffff;
-    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     --footer-bg: #1a1a1a;
     --footer-text: #e0e0e0;
     --footer-muted: #999999;
     --footer-border: #333333;
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Inter', sans-serif;
+    --tracking-body: 0.35px;
+    --border-hair: 0.5px;
+    --glass-bg: rgba(249, 247, 242, 0.62);
+    --glass-blur: 8px
 }
 
-/* Reset básico */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box
+}
+
+@media (prefers-reduced-motion:reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
 }
 
 body {
     font-family: var(--font-sans);
     background-color: var(--bg-light);
     color: var(--text-main);
-    line-height: 1.6;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+    letter-spacing: var(--tracking-body)
 }
 
-/* --- HEADER --- */
 .main-header {
     padding: 30px 5%;
     display: flex;
@@ -36,26 +48,43 @@ body {
     align-items: center;
     position: absolute;
     width: 100%;
-    z-index: 100;
+    z-index: 150;
+    top: 0;
+    left: 0;
+    transition: var(--transition)
+}
+
+.main-header.scrolled,
+.main-header.style-fixed {
+    position: fixed;
+    background: linear-gradient(180deg, var(--glass-bg), rgba(249, 247, 242, 0.55));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: var(--border-hair) solid rgba(20, 20, 20, 0.04);
+    box-shadow: 0 8px 30px rgba(10, 10, 10, 0.06);
+    padding: 12px 5%
 }
 
 .logo {
     font-family: var(--font-serif);
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: var(--white);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    color: var(--white)
 }
 
 .logo span {
     font-weight: 400;
     font-style: italic;
+    margin-left: 6px;
+    color: inherit;
+    opacity: 0.95
 }
 
 .nav-links {
     display: flex;
-    gap: 40px;
-    list-style: none;
+    gap: 32px;
+    list-style: none
 }
 
 .nav-links a {
@@ -64,97 +93,197 @@ body {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    opacity: 0.8;
-    transition: var(--transition);
+    opacity: 0.9;
+    transition: var(--transition)
 }
 
-.nav-links a:hover {
-    opacity: 1;
-    letter-spacing: 3px;
+.nav-links a:hover,
+.nav-links a:focus {
+    color: var(--accent);
+    letter-spacing: 2.6px;
+    transform: translateY(-1px)
 }
 
-/* --- HERO --- */
 .hero {
-    height: 118vh;
+    min-height: 88vh;
     background: url('../img/background_home.png') center/cover no-repeat;
     display: flex;
     align-items: center;
     padding: 0 10%;
     position: relative;
     color: var(--white);
+    overflow: hidden
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+    background: linear-gradient(90deg, rgba(12, 12, 12, 0.36), rgba(12, 12, 12, 0.06));
+    pointer-events: none
 }
 
 .hero-content {
     position: relative;
-    max-width: 700px;
+    max-width: 760px;
+    z-index: 4
+}
+
+.hero-content .small-tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2.6px;
+    color: var(--text-muted);
+    margin-bottom: 16px
 }
 
 .hero-content h1 {
     font-family: var(--font-serif);
-    font-size: clamp(3rem, 8vw, 5rem);
-    line-height: 1.1;
-    margin-bottom: 25px;
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(2.8rem, 7vw, 4.8rem);
+    line-height: 1.02;
+    color: var(--white);
+    text-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+    margin-bottom: 18px
 }
 
 .description {
-    font-size: 1.2rem;
-    opacity: 0.8;
-    margin-bottom: 40px;
+    font-family: var(--font-sans);
+    font-size: 1.12rem;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 28px;
     font-weight: 300;
+    max-width: 520px
 }
 
 .btn {
-    padding: 16px 35px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: var(--transition);
+    padding: 14px 34px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    font-family: var(--font-sans);
+    position: relative;
+    overflow: hidden;
     display: inline-block;
+    text-decoration: none;
+    transition: var(--transition);
+    box-shadow: 0 8px 22px rgba(12, 12, 12, 0.06);
+    cursor: pointer;
+    border: none
+}
+
+.btn:focus-visible {
+    outline: 3px solid rgba(176, 139, 79, 0.18);
+    outline-offset: 4px;
+    border-radius: 999px
+}
+
+.btn-primary {
+    background: linear-gradient(180deg, var(--white), #fbfaf7);
+    color: var(--text-main);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: inset 0 -6px 18px rgba(0, 0, 0, 0.03), 0 12px 36px rgba(10, 10, 10, 0.06);
+    padding: 12px 34px
+}
+
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    pointer-events: none;
+    transition: box-shadow .32s ease, transform .32s ease
 }
 
 .btn-primary:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    background: #f0f0f0; /* Um branco levemente acinzentado no hover */
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 24px 60px rgba(12, 12, 12, 0.12);
+    border-color: rgba(176, 139, 79, 0.16);
+    background: linear-gradient(180deg, #fff, #f3efe6)
+}
+
+.btn-primary:hover::after {
+    box-shadow: 0 0 0 6px rgba(176, 139, 79, 0.06)
+}
+
+.btn-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(176, 139, 79, 0.14)
+}
+
+.btn-secondary {
+    background: rgba(16, 16, 16, 0.78);
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 12px 30px;
+    border-radius: 999px;
+    font-weight: 700;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 8px 28px rgba(6, 6, 6, 0.28);
+    transition: var(--transition)
 }
 
 .btn-secondary:hover {
-    background: #333333; /* Cinza mais escuro no hover */
-    border-color: #333333;
+    transform: translateY(-4px);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-color: rgba(176, 139, 79, 0.18);
+    box-shadow: 0 30px 70px rgba(6, 6, 6, 0.32)
 }
 
-/* --- TRAJETÓRIA --- */
+.btn-secondary:focus-visible {
+    outline: 3px solid rgba(176, 139, 79, 0.16);
+    outline-offset: 4px
+}
+
+.obras-header .btn-tertiary {
+    padding: 14px 44px;
+    min-width: 340px;
+    text-align: center;
+    font-size: 1rem;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.obras-header .btn-tertiary:hover {
+    transform: translateY(-5px) scale(1.01);
+    background: linear-gradient(180deg, rgba(176, 139, 79, 0.08), rgba(140, 106, 58, 0.04));
+    color: var(--text-main);
+    border-color: rgba(176, 139, 79, 0.28);
+    box-shadow: 0 30px 80px rgba(10, 10, 10, 0.18)
+}
+
+.obras-header .btn-tertiary:focus-visible {
+    outline: 3px solid rgba(176, 139, 79, 0.18);
+    outline-offset: 6px
+}
+
 .trajetoria {
-    padding: 120px 10%;
+    padding: 120px 10%
 }
 
 .container-trajetoria {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 100px;
-    align-items: center;
+    gap: 80px;
+    align-items: center
 }
 
 .section-subtitle {
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 3px;
-    font-size: 0.75rem;
     color: var(--text-muted);
-    display: block;
-    margin-bottom: 15px;
+    margin-bottom: 12px
 }
 
 .trajetoria-text h2 {
     font-family: var(--font-serif);
-    font-size: 2.5rem;
-    margin-bottom: 30px;
+    font-style: italic;
+    font-size: 2.6rem;
+    margin-bottom: 18px;
+    color: var(--text-main)
 }
 
 .trajetoria-metricas {
@@ -163,25 +292,28 @@ body {
     gap: 30px;
     margin-top: 50px;
     padding-top: 30px;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid rgba(0, 0, 0, 0.05)
 }
 
 .metrica-item strong {
     font-family: var(--font-serif);
-    font-size: 2.5rem;
-    display: block;
+    font-size: 2.4rem;
+    display: block
 }
 
 .trajetoria-image-wrapper img {
+    display: block;
     width: 100%;
+    height: auto;
+    object-fit: cover;
     filter: grayscale(100%);
-    transition: var(--transition);
-    border-radius: 4px;
+    transition: transform .7s cubic-bezier(.16, 1, .3, 1), filter .6s ease;
+    border-radius: 6px
 }
 
 .trajetoria-image-wrapper img:hover {
     filter: grayscale(0%);
-    transform: scale(1.02);
+    transform: scale(1.03) translateY(-4px)
 }
 
 .btn-text-link {
@@ -189,11 +321,11 @@ body {
     margin-top: 20px;
     color: var(--text-main);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     position: relative;
-    padding-bottom: 5px;
+    padding-bottom: 5px
 }
 
 .btn-text-link::after {
@@ -204,21 +336,20 @@ body {
     bottom: 0;
     left: 0;
     background-color: var(--text-main);
-    transform: scaleX(0.3);
+    transform: scaleX(0.35);
     transform-origin: bottom left;
-    transition: transform 0.3s ease;
+    transition: transform .3s ease
 }
 
 .btn-text-link:hover::after {
-    transform: scaleX(1);
+    transform: scaleX(1)
 }
 
-/* Correção do Slider da Home */
 .home-slider-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 20px
 }
 
 .home-slider {
@@ -227,18 +358,16 @@ body {
     scroll-behavior: smooth;
     gap: 30px;
     padding: 20px 0;
-    /* Esconde a barra de rolagem */
-    scrollbar-width: none;
+    scrollbar-width: none
 }
 
 .home-slider::-webkit-scrollbar {
-    display: none;
+    display: none
 }
 
 .home-slider .obra-card {
     min-width: 300px;
-    /* Garante que fiquem lado a lado */
-    flex: 0 0 auto;
+    flex: 0 0 auto
 }
 
 .slider-arrow {
@@ -252,32 +381,31 @@ body {
     align-items: center;
     justify-content: center;
     transition: var(--transition);
-    z-index: 10;
+    z-index: 10
 }
 
 .slider-arrow:hover {
     background: var(--accent);
-    color: white;
+    color: var(--white)
 }
 
-/* Ajuste no botão Ver Catálogo */
-.obras-header .btn-secondary {
+.obras-header .btn-tertiary {
     padding: 10px 22px;
     border-color: var(--text-main);
     color: var(--text-main);
     white-space: nowrap;
-    transition: all 0.3s ease;
+    transition: all .3s ease
 }
 
-.obras-header .btn-secondary:hover {
+.obras-header .btn-tertiary:hover {
     transform: translateY(-2px);
     background: var(--text-main);
-    color: #fff;
+    color: #fff
 }
 
 .slider-controls {
     display: flex;
-    gap: 8px;
+    gap: 8px
 }
 
 .nav-btn {
@@ -286,110 +414,93 @@ body {
     border-radius: 6px;
     border: 1px solid var(--text-main);
     background: transparent;
-    cursor: pointer;
+    cursor: pointer
 }
 
-@media (max-width: 768px) {
-    .obras-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .obras-actions {
-        width: 100%;
-        justify-content: space-between;
-    }
-}
-
-/* --- OBRAS SLIDER --- */
 .obras {
     padding: 100px 5%;
     background-color: var(--bg-light);
-    overflow: hidden;
+    overflow: hidden
 }
 
 .container-obras {
     max-width: 1140px;
     margin: 0 auto;
-    position: relative;
+    position: relative
 }
 
 .obras-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 40px;
+    margin-bottom: 40px
 }
 
 .obras-header h2 {
     font-family: var(--font-serif);
     font-size: 2.2rem;
-    margin: 0;
+    margin: 0
 }
 
 .obras-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 20px
 }
 
 .obras-wrapper {
     position: relative;
     width: 100%;
-    transition: all 0.5s ease;
+    transition: all .5s ease
 }
 
 .obras-grid {
     display: flex;
     gap: 30px;
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform .6s cubic-bezier(.23, 1, .32, 1);
     will-change: transform;
-    justify-content: center;
+    justify-content: center
 }
 
-/* ===========================
-   Estilos originais do usuário
-   =========================== */
 .obra-card {
     flex: 0 0 350px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    text-align: left;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.98));
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 12px 36px rgba(12, 12, 12, 0.06);
+    border: var(--border-hair) solid rgba(0, 0, 0, 0.04);
+    transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s
 }
 
 .obra-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 18px 50px rgba(18, 18, 18, 0.06);
+    transform: translateY(-12px);
+    box-shadow: 0 30px 70px rgba(12, 12, 12, 0.08)
 }
 
 .obra-capa img {
     width: 100%;
-    height: 450px;
+    height: 420px;
     object-fit: cover;
-    border-radius: 4px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    margin-bottom: 16px
 }
 
 .obra-info h3 {
     font-family: var(--font-serif);
-    margin: 10px 0;
+    font-size: 1.25rem;
+    color: var(--text-main);
+    margin: 8px 0
 }
 
 .obra-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05)
 }
 
-/* --- NAVEGAÇÃO --- */
 .obras-nav {
     position: absolute;
     top: 50%;
@@ -406,48 +517,48 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all .3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2)
 }
 
 .obras-nav:hover {
     background: #444;
-    transform: translateY(-50%) scale(1.1);
+    transform: translateY(-50%) scale(1.08)
 }
 
 .obras-nav.prev {
-    left: -60px;
+    left: -60px
 }
 
 .obras-nav.next {
-    right: -60px;
+    right: -60px
 }
 
-@media (max-width: 1300px) {
+@media (max-width:1300px) {
     .obras-nav.prev {
-        left: 10px;
+        left: 10px
     }
 
     .obras-nav.next {
-        right: 10px;
+        right: 10px
     }
 
     .obras-wrapper {
-        padding: 0 20px;
+        padding: 0 20px
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width:768px) {
     .obra-card {
-        flex: 0 0 85vw;
+        flex: 0 0 85vw
     }
 
     .obras-nav {
-        display: none !important;
+        display: none !important
     }
 
     .obras-wrapper {
-        overflow-x: auto !important;
+        overflow-x: auto !important
     }
 }
 
@@ -457,36 +568,30 @@ body {
     padding: 8px 15px;
     border-radius: 4px;
     text-decoration: none;
-    font-size: 0.8rem;
+    font-size: 0.8rem
 }
 
-/* --- RESPONSIVIDADE --- */
-@media (max-width: 900px) {
+@media (max-width:900px) {
     .container-trajetoria {
         grid-template-columns: 1fr;
-        gap: 50px;
+        gap: 50px
     }
 
     .hero {
         padding: 0 5%;
-        text-align: center;
+        text-align: center
     }
 
     .hero-overlay {
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.6)
     }
 
     .btn-secondary {
         margin: 15px 0 0 0;
-        display: block;
+        display: block
     }
 }
 
-/* ===========================
-   Estilos adicionais (overlay, botões, cards modernos)
-   =========================== */
-
-/* imagem e overlay */
 .obra-img-container {
     position: relative;
     width: 100%;
@@ -494,7 +599,7 @@ body {
     overflow: hidden;
     background: #f6f6f6;
     display: block;
-    border-radius: 6px;
+    border-radius: 8px
 }
 
 .obra-img {
@@ -502,15 +607,14 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s ease;
-    border-radius: 6px;
+    transition: transform .5s cubic-bezier(.16, 1, .3, 1);
+    border-radius: 8px
 }
 
 .obra-card:hover .obra-img {
-    transform: scale(1.03);
+    transform: scale(1.03)
 }
 
-/* overlay no rodapé da imagem com botões */
 .obra-overlay {
     position: absolute;
     left: 0;
@@ -523,27 +627,25 @@ body {
     justify-content: flex-start;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 100%);
     box-sizing: border-box;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px
 }
 
-/* botão detalhes (visual leve) */
 .btn-detalhes {
     background: rgba(255, 255, 255, 0.95);
     border: none;
     padding: 8px 12px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     color: var(--text-main);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06)
 }
 
 .btn-detalhes:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px)
 }
 
-/* botão Ler Online (destaque secundário) */
 .btn-read {
     display: inline-flex;
     align-items: center;
@@ -556,62 +658,47 @@ body {
     background: var(--text-main);
     border: none;
     cursor: pointer;
-    font-weight: 600;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12)
 }
 
 .btn-read:hover {
-    opacity: 0.95;
-    transform: translateY(-2px);
+    opacity: 0.96;
+    transform: translateY(-2px)
 }
 
-/* info abaixo da imagem */
 .obra-info {
     padding: 18px 20px 26px 20px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 6px
 }
 
 .obra-categoria {
     font-size: 0.75rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1px
 }
 
 .obra-titulo {
     font-family: var(--font-serif);
     font-size: 1.2rem;
     color: var(--text-main);
-    margin: 4px 0;
+    margin: 4px 0
 }
 
 .obra-ano {
     color: var(--text-muted);
-    font-size: 0.95rem;
+    font-size: 0.95rem
 }
 
-/* responsividade */
-@media (max-width: 900px) {
-    .obra-img-container {
-        height: 360px;
-    }
-
-    .obra-card {
-        border-radius: 10px;
-        padding: 18px;
-    }
-}
-
-
-/* --- FOOTER --- */
 .footer-institucional {
-    background-color: var(--footer-bg);
+    background: linear-gradient(180deg, #0f0f0f, #0b0b0b);
     color: var(--footer-text);
     padding: 80px 5% 40px 5%;
     font-family: var(--font-sans);
-    border-top: 1px solid var(--footer-border);
+    border-top: var(--border-hair) solid rgba(255, 255, 255, 0.02)
 }
 
 .footer-container {
@@ -619,7 +706,7 @@ body {
     margin: 0 auto;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    gap: 60px;
+    gap: 60px
 }
 
 .footer-name {
@@ -627,7 +714,7 @@ body {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 15px;
-    color: #ffffff;
+    color: var(--white)
 }
 
 .footer-title {
@@ -636,7 +723,7 @@ body {
     letter-spacing: 1.5px;
     color: var(--footer-muted);
     margin-bottom: 25px;
-    font-weight: 600;
+    font-weight: 700
 }
 
 .footer-description {
@@ -644,82 +731,75 @@ body {
     line-height: 1.6;
     color: var(--footer-muted);
     margin-bottom: 20px;
-    max-width: 320px;
+    max-width: 320px
 }
 
 .footer-list {
     list-style: none;
-    padding: 0;
+    padding: 0
 }
 
 .footer-list li {
-    margin-bottom: 12px;
+    margin-bottom: 12px
 }
 
 .footer-link {
     color: var(--footer-text);
     text-decoration: none;
     font-size: 0.9rem;
-    transition: opacity 0.2s ease;
-    display: inline-block;
+    transition: opacity .2s ease;
+    display: inline-block
 }
 
 .footer-link:hover {
-    opacity: 0.7;
+    opacity: 0.82;
+    color: var(--gold-matte)
 }
 
 .footer-social {
     margin-top: 15px;
     display: flex;
     gap: 10px;
-    align-items: center;
+    align-items: center
 }
 
 .separator {
     color: var(--footer-border);
-    font-size: 0.8rem;
+    font-size: 0.8rem
 }
 
 .footer-copyright {
     font-size: 0.75rem;
-    color: #555555;
+    color: #777;
     margin-top: 30px;
-    border-top: 1px solid var(--footer-border);
-    padding-top: 20px;
+    border-top: var(--border-hair) solid rgba(255, 255, 255, 0.03);
+    padding-top: 20px
 }
 
-@media (max-width: 900px) {
+@media (max-width:900px) {
     .footer-container {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 40px
     }
 
     .footer-institucional {
         padding: 60px 24px 40px 24px;
-        text-align: left;
+        text-align: left
     }
 
     .footer-description {
-        max-width: 100%;
+        max-width: 100%
     }
-}
-
-/* --- ESTILOS DO CATÁLOGO (OBRAS-GALERIA) --- */
-.main-header.style-fixed {
-    position: relative;
-    background-color: var(--bg-light);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 20px 5%;
 }
 
 .main-header.style-fixed .nav-links a,
 .main-header.style-fixed .logo,
 .main-header.style-fixed .logo span {
-    color: var(--text-main);
+    color: var(--text-main)
 }
 
 .main-header.style-fixed .nav-links a.active {
-    border-bottom: 1px solid var(--text-main);
+    border-bottom: 1px solid var(--text-main)
 }
 
 .obra-img {
@@ -727,25 +807,25 @@ body {
     height: 350px;
     object-fit: cover;
     border-bottom: 1px solid #eee;
-    display: block;
+    display: block
 }
 
 .catalogo-main {
     padding: 60px 5% 100px 5%;
     max-width: 1400px;
     margin: 0 auto;
-    min-height: 80vh;
+    min-height: 80vh
 }
 
 .catalogo-intro {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 60px
 }
 
 .catalogo-intro h1 {
     font-family: var(--font-serif);
     font-size: 3rem;
-    margin-bottom: 15px;
+    margin-bottom: 15px
 }
 
 .catalogo-intro p {
@@ -753,7 +833,7 @@ body {
     color: var(--text-muted);
     font-size: 1.1rem;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0 auto
 }
 
 .catalogo-controls {
@@ -764,13 +844,13 @@ body {
     gap: 20px;
     margin-bottom: 50px;
     padding-bottom: 30px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05)
 }
 
 .search-box {
     position: relative;
     flex: 1;
-    min-width: 300px;
+    min-width: 300px
 }
 
 .search-box label {
@@ -778,7 +858,7 @@ body {
     font-size: 0.9rem;
     margin-bottom: 8px;
     color: var(--text-main);
-    font-weight: 500;
+    font-weight: 500
 }
 
 .search-box input {
@@ -786,18 +866,18 @@ body {
     height: 48px;
     padding: 0 15px 0 45px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: #fff;
     font-family: var(--font-sans);
     font-size: 0.95rem;
     color: var(--text-main);
-    transition: all 0.3s ease;
+    transition: all .3s ease
 }
 
 .search-box input:focus {
     outline: none;
     border-color: var(--text-main);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04)
 }
 
 .search-icon {
@@ -810,13 +890,13 @@ body {
     line-height: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center
 }
 
 .filters-box {
     display: flex;
     gap: 15px;
-    align-items: flex-end;
+    align-items: flex-end
 }
 
 .filters-box select {
@@ -826,44 +906,44 @@ body {
     height: 48px;
     padding: 0 40px 0 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: #fff;
     color: var(--text-main);
     font-family: var(--font-sans);
     font-size: 0.9rem;
     cursor: pointer;
     min-width: 180px;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox=' 0 0 24 24' fill=' none' stroke=' %23333' stroke-width=' 2' stroke-linecap=' round' stroke-linejoin=' round'%3e%3cpolyline points=' 6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 15px center;
-    background-size: 16px;
+    background-size: 16px
 }
 
 .filters-box select:focus {
     outline: none;
-    border-color: var(--text-main);
+    border-color: var(--text-main)
 }
 
 .catalogo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 40px;
+    gap: 40px
 }
 
 .cat-card {
     background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    border-radius: 8px;
+    border: var(--border-hair) solid rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform .32s ease, box-shadow .32s ease;
     display: flex;
-    flex-direction: column;
+    flex-direction: column
 }
 
 .cat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(12, 12, 12, 0.06)
 }
 
 .cat-card-img {
@@ -871,18 +951,19 @@ body {
     height: 380px;
     object-fit: cover;
     filter: grayscale(10%);
-    transition: filter 0.3s;
+    transition: filter .3s ease, transform .35s ease
 }
 
 .cat-card:hover .cat-card-img {
     filter: grayscale(0%);
+    transform: scale(1.02)
 }
 
 .cat-card-body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex-grow: 1
 }
 
 .cat-meta {
@@ -890,77 +971,76 @@ body {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 8px
 }
 
 .cat-card h3 {
     font-family: var(--font-serif);
     font-size: 1.3rem;
     margin-bottom: 10px;
-    color: var(--text-main);
+    color: var(--text-main)
 }
 
 .cat-card p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: #666;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 20px
 }
 
 .cat-link-fake {
     margin-top: auto;
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
     text-decoration: underline;
-    color: var(--text-main);
+    color: var(--text-main)
 }
 
 .no-results {
     text-align: center;
     padding: 50px;
     color: var(--text-muted);
-    grid-column: 1 / -1;
+    grid-column: 1/-1
 }
 
 .hidden {
-    display: none !important;
+    display: none !important
 }
 
 .modal-close-btn:focus,
 .modal-actions a:focus {
-    outline: 3px solid #000;
-    outline-offset: 2px;
+    outline: 3px solid rgba(0, 0, 0, 0.9);
+    outline-offset: 2px
 }
 
-/* Impede o scroll do site quando o modal está aberto */
 body.no-scroll {
-    overflow: hidden;
+    overflow: hidden
 }
 
-/* Modal: Melhorias de UX e Acessibilidade */
 #obraModal {
     border: none;
     border-radius: 12px;
     padding: 0;
-    max-width: 850px;
-    width: 90%;
+    max-width: 900px;
+    width: 92%;
     margin: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32)
 }
 
 #obraModal::backdrop {
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(3px);
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(3px)
 }
 
 .modal-grid {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
     max-height: 85vh;
+    gap: 18px
 }
 
 .modal-img-side img {
@@ -968,22 +1048,22 @@ body.no-scroll {
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 8px
 }
 
 .modal-text-side {
-    padding: 40px;
+    padding: 36px;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: column
 }
 
 .modal-synopsis-container {
     margin: 20px 0;
     line-height: 1.7;
-    color: var(--text-muted);
+    color: var(--text-muted)
 }
 
-/* Reader View (Simples, integrado na galeria) */
 .reader-overlay {
     position: fixed;
     top: 0;
@@ -993,31 +1073,201 @@ body.no-scroll {
     background: var(--white);
     z-index: 2000;
     display: none;
-    /* Ativado via JS */
-    overflow-y: auto;
+    overflow-y: auto
 }
 
 .reader-content {
-    max-width: 720px;
+    max-width: 740px;
     margin: 100px auto;
     padding: 0 20px;
-    font-family: 'Georgia', serif;
-    /* Fonte editorial */
-    font-size: 1.15rem;
-    line-height: 1.8;
+    font-family: var(--font-serif);
+    font-size: 1.12rem;
+    line-height: 1.9;
+    color: var(--text-main)
 }
 
-@media (max-width: 768px) {
+@media (max-width:768px) {
     .modal-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr
     }
 
     .modal-img-side {
-        height: 250px;
+        height: 250px
     }
 }
 
-/* --- MODAL (DIALOG) --- */
+.clipped-art {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 82%, 60% 100%, 0 82%);
+    clip-path: polygon(0 0, 100% 0, 100% 82%, 60% 100%, 0 82%);
+    transition: transform .6s cubic-bezier(.16, 1, .3, 1)
+}
+
+.clipped-ellipse {
+    -webkit-clip-path: ellipse(80% 70% at 15% 30%);
+    clip-path: ellipse(80% 70% at 15% 30%)
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .65s cubic-bezier(.16, 1, .3, 1), transform .65s cubic-bezier(.16, 1, .3, 1);
+    will-change: opacity, transform
+}
+
+.reveal.in-view {
+    opacity: 1;
+    transform: none
+}
+
+.img-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+    z-index: 10;  /* Garantir que a imagem não está atrás de outros elementos */
+}
+
+
+.img-reveal.in-view {
+    opacity: 1;
+    transform: none
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(22px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+.ad-slot {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(250, 248, 245, 0.9), rgba(248, 246, 243, 0.98));
+    border: var(--border-hair) solid rgba(0, 0, 0, 0.06);
+    border-radius: 6px;
+    padding: 10px;
+    position: relative;
+    box-shadow: 0 8px 22px rgba(12, 12, 12, 0.04);
+    margin: 12px 0;
+    min-height: 60px;
+    flex-shrink: 0
+}
+
+.ad-horizontal {
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 18px
+}
+
+.ad-sidebar {
+    max-width: 320px;
+    padding: 12px
+}
+
+.ad-slot::before {
+    content: 'Publicidade';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 0.68rem;
+    color: rgba(16, 16, 16, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    background: rgba(255, 255, 255, 0.66);
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+    border: var(--border-hair) solid rgba(0, 0, 0, 0.03)
+}
+
+.ad-slot img,
+.ad-slot iframe,
+.ad-slot video {
+    width: 100%;
+    height: auto;
+    max-height: 320px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px
+}
+
+.promo-video-container {
+    width: 100%;
+    max-width: 980px;
+    margin: 40px auto;
+    padding: 12px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(249, 247, 242, 0.98));
+    box-shadow: 0 26px 60px rgba(12, 12, 12, 0.08);
+    border: var(--border-hair) solid rgba(20, 20, 20, 0.04);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition)
+}
+
+.promo-video-container::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 8px;
+    pointer-events: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6)
+}
+
+.promo-video-frame {
+    display: block;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+    position: relative
+}
+
+.promo-video-frame iframe,
+.promo-video-frame video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 6px;
+    display: block
+}
+
+.promo-video-container:hover {
+    border-color: rgba(176, 139, 79, 0.16);
+    transform: translateY(-4px)
+}
+
+.accent {
+    color: var(--accent)
+}
+
+.accent-bg {
+    background: linear-gradient(90deg, rgba(176, 139, 79, 0.08), rgba(140, 106, 58, 0.04));
+    border-radius: 6px;
+    padding: 6px
+}
+
+.small-muted {
+    font-size: 0.85rem;
+    color: var(--text-muted)
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
 .obra-modal {
     border: none;
     padding: 0;
@@ -1025,27 +1275,22 @@ body.no-scroll {
     width: min(94%, 900px);
     max-width: 900px;
     max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 40px);
-    /* garante que não exceda a viewport */
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
     background: var(--bg-light);
     position: fixed !important;
-    /* força comportamento consistente */
     left: 50% !important;
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0;
     overflow: hidden;
-    z-index: 10000;
-    /* garante estar acima de header fixo */
+    z-index: 10000
 }
 
-/* Backdrop estético */
 .obra-modal::backdrop {
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px)
 }
 
-/* Conteúdo interno do modal */
 .modal-wrapper {
     position: relative;
     display: flex;
@@ -1053,7 +1298,7 @@ body.no-scroll {
     align-items: stretch;
     overflow: hidden;
     width: 100%;
-    max-height: calc(90vh - 24px);
+    max-height: calc(90vh - 24px)
 }
 
 .modal-close-btn {
@@ -1067,21 +1312,21 @@ body.no-scroll {
     cursor: pointer;
     z-index: 20;
     line-height: 1;
-    padding: 6px;
+    padding: 6px
 }
 
 .modal-image-wrapper {
     flex: 1 1 45%;
     background: #e5e5e5;
     min-height: 320px;
-    display: block;
+    display: block
 }
 
 .modal-image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
+    display: block
 }
 
 .modal-content {
@@ -1090,7 +1335,7 @@ body.no-scroll {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    overflow: auto;
+    overflow: auto
 }
 
 .meta-tag {
@@ -1103,7 +1348,7 @@ body.no-scroll {
     border-radius: 4px;
     margin-right: 10px;
     margin-bottom: 15px;
-    color: #555;
+    color: #555
 }
 
 .modal-info h2 {
@@ -1111,7 +1356,7 @@ body.no-scroll {
     font-size: 2rem;
     line-height: 1.12;
     margin-bottom: 20px;
-    color: var(--text-main);
+    color: var(--text-main)
 }
 
 .modal-synopsis {
@@ -1121,139 +1366,43 @@ body.no-scroll {
     color: #444;
     margin-bottom: 24px;
     max-height: 40vh;
-    overflow-y: auto;
+    overflow-y: auto
 }
 
 .modal-actions {
     display: flex;
-    gap: 15px;
-}
-
-/* MOBILE: empilha conteúdo e ajusta paddings/alturas */
-@media (max-width: 900px) {
-    .modal-wrapper {
-        flex-direction: column;
-        max-height: 92vh;
-    }
-
-    .modal-image-wrapper {
-        width: 100%;
-        height: 220px;
-        min-height: 220px;
-        flex: none;
-    }
-
-    .modal-content {
-        padding: 20px;
-    }
-
-    .modal-info h2 {
-        font-size: 1.6rem;
-    }
-
-    .obra-modal {
-        width: calc(100% - 24px);
-        left: 50%;
-        top: calc(50% + env(safe-area-inset-top));
-        transform: translate(-50%, -50%);
-        border-radius: 10px;
-    }
-}
-
-/* Tabs */
-.modal-tabs {
-    display: flex;
-    gap: 10px;
-    margin-top: 6px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.modal-tabs button {
-    background: transparent;
-    border: none;
-    padding: 10px 12px;
-    font-weight: 700;
-    color: var(--text-muted);
-    cursor: pointer;
-    border-radius: 8px 8px 0 0;
-    transition: background .18s, color .18s;
-}
-
-.modal-tabs button.active {
-    color: var(--text-main);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.35));
-}
-
-/* Tab panes */
-.tab-pane {
-    display: none;
-    padding-top: 12px;
-}
-
-.tab-pane.active {
-    display: block;
-}
-
-/* Reviews layout */
-.reviews-summary {
-    display: flex;
+    gap: 22px;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 12px;
+    margin-top: 18px
 }
 
-.review-stars {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-}
-
-/* Star visual: uses inline SVG mask (safe fallback) */
-.star {
-    width: 26px;
-    height: 26px;
-    display: inline-block;
-    background: #ffd166;
-    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
-    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
-    opacity: 0.18;
-    transition: opacity .12s, transform .12s;
-    background-color: #ffd166;
-}
-
-.star.filled {
-    opacity: 1;
-    transform: scale(1.02);
-}
-
-/* Approval badge */
-.approval-badge {
-    font-weight: 700;
-    background: linear-gradient(90deg, #dff7e5, #e6fbf0);
-    color: #1a7a44;
-    padding: 6px 10px;
+.modal-actions .btn {
+    padding: 12px 24px;
     border-radius: 999px;
-    font-size: 0.9rem;
-    display: inline-block;
+    font-weight: 700
 }
 
-/* Reviews list */
-/* === Ajustes específicos pedidos pelo usuário === */
+.btn-secondary.read-inline {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--text-main)
+}
 
-/* Reviews list: maior, com scroll quando necessário */
+.modal-content {
+    padding-top: 34px;
+    padding-bottom: 34px
+}
+
 .reviews-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
     margin-top: 16px;
     max-height: 48vh;
-    /* quando ultrapassar isso, ativa scroll */
     overflow-y: auto;
-    padding-right: 6px;
-    /* espaço para scrollbar */
+    padding-right: 6px
 }
 
-/* Cards de review: mais espaçamento e menos compactados */
 .review-card {
     border-radius: 10px;
     background: #fff;
@@ -1263,99 +1412,61 @@ body.no-scroll {
     gap: 12px;
     align-items: flex-start;
     min-height: 72px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03)
 }
 
-/* Remove a coluna grande da nota à esquerda - o JS não mais a renderiza */
-/* Se por acaso sobrar, escondemos a coluna de rating via CSS */
 .review-card .rating-left {
-    display: none;
+    display: none
 }
 
-/* Comentário: mais espaço e legível */
 .review-card .comment-text {
     font-size: 0.98rem;
     line-height: 1.6;
     color: #333;
-    margin-top: 6px;
+    margin-top: 6px
 }
 
-/* Meta info (data) separado, menos intrusivo */
 .review-card .meta {
     font-size: 0.82rem;
-    color: var(--text-muted);
+    color: var(--text-muted)
 }
 
-/* Aumenta o gap entre os botões no modal e deixa mais arejado */
-.modal-actions {
-    display: flex;
-    gap: 22px;
-    /* aumenta espaço entre Ler Online e Comprar */
-    align-items: center;
-    margin-top: 18px;
-}
-
-/* Botões: mais espaçados e com padding maior (não muito folgado) */
-.modal-actions .btn {
-    padding: 12px 24px;
-    border-radius: 999px;
-    font-weight: 700;
-}
-
-/* Ler Online -- estilo discreto, margem direita automática no mobile */
-.btn-secondary.read-inline {
-    background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    color: var(--text-main);
-}
-
-/* Força um pouco mais de espaço entre as áreas do modal e evita "colagem" */
-.modal-content {
-    padding-top: 34px;
-    padding-bottom: 34px;
-}
-
-/* Scrollbars suaves para a lista de comentários */
 .reviews-list::-webkit-scrollbar {
-    width: 10px;
+    width: 10px
 }
 
 .reviews-list::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.06);
-    border-radius: 8px;
+    border-radius: 8px
 }
 
-/* Se quiser destacar o botão "Enviar" com espaço visual, este utilitário ajuda */
 .form-actions {
-    gap: 12px !important;
+    gap: 12px !important
 }
 
-/* Responsividade: reduz altura e mantém espaçamento no mobile */
-@media (max-width: 900px) {
+@media (max-width:900px) {
     .reviews-list {
         max-height: 40vh;
         gap: 12px;
-        padding-right: 4px;
+        padding-right: 4px
     }
 
     .review-card {
         padding: 14px;
-        min-height: 64px;
+        min-height: 64px
     }
 
     .modal-actions {
         gap: 14px;
-        flex-wrap: wrap;
+        flex-wrap: wrap
     }
 }
 
-
-/* Comment form */
 .review-form {
     margin-top: 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 8px
 }
 
 .review-form textarea {
@@ -1365,99 +1476,79 @@ body.no-scroll {
     border: 1px solid #e6e6e6;
     padding: 10px;
     resize: vertical;
-    font-family: inherit;
+    font-family: inherit
 }
 
 .review-form .form-actions {
     display: flex;
     gap: 10px;
-    align-items: center;
+    align-items: center
 }
 
-/* Button variants (small tweaks to blend with modal) */
 .btn {
-    padding: 10px 18px;
+    padding: 14px 34px;
     border-radius: 999px;
     border: none;
     font-weight: 700;
-    cursor: pointer;
+    cursor: pointer
 }
 
-.btn-primary {
-    background: var(--white); /* Botão da esquerda: Branco */
-    color: var(--text-main);
-    border: 1px solid var(--white);
-}
-
-.btn-secondary {
-    background: #4a4a4a; /* Botão da direita: Cinza */
-    color: var(--white);
-    border: 1px solid #4a4a4a;
-    margin-left: 15px;
-}
-
-/* small helpers */
 .modal-synopsis::-webkit-scrollbar,
 .modal-content::-webkit-scrollbar,
-.reviews-list::-webkit-scrollbar {
+reviews-list::-webkit-scrollbar {
     height: 8px;
-    width: 8px;
+    width: 8px
 }
 
 .modal-synopsis::-webkit-scrollbar-thumb,
 .modal-content::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.06);
-    border-radius: 8px;
+    border-radius: 8px
 }
 
-/* Responsividade extra */
-@media (max-width: 900px) {
+@media (max-width:900px) {
     .modal-wrapper {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr
     }
 
     .modal-image-wrapper {
         height: 220px;
-        min-height: 220px;
+        min-height: 220px
     }
 
     .modal-content {
-        padding: 18px;
+        padding: 18px
     }
 
     .review-stars .star {
         width: 22px;
-        height: 22px;
+        height: 22px
     }
 }
 
-/* small visual polish to ensure modal content sits centered vertically */
 .modal-wrapper .modal-content {
     justify-content: flex-start;
     padding-top: 28px;
-    padding-bottom: 28px;
+    padding-bottom: 28px
 }
 
-/* ensure buttons in footer align right on larger screens */
 .modal-actions {
     margin-top: 10px;
-    justify-content: flex-start;
+    justify-content: flex-start
 }
 
-@media(min-width:900px) {
+@media (min-width:900px) {
     .modal-actions {
-        justify-content: flex-end;
+        justify-content: flex-end
     }
 }
 
-
-/* --- RESTANTE DO CSS (BIOGRAFIA, TIMELINE, ETC) --- */
 .bio-container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 60px 5% 100px 5%;
     font-family: var(--font-sans);
-    color: var(--text-main);
+    color: var(--text-main)
 }
 
 .bio-intro {
@@ -1465,7 +1556,7 @@ body.no-scroll {
     grid-template-columns: 1.2fr 0.8fr;
     gap: 60px;
     align-items: center;
-    margin-bottom: 80px;
+    margin-bottom: 80px
 }
 
 .bio-intro h1 {
@@ -1473,21 +1564,26 @@ body.no-scroll {
     font-size: 3.5rem;
     line-height: 1;
     margin-bottom: 25px;
-    letter-spacing: -1px;
+    letter-spacing: -1px
 }
 
 .bio-tagline {
     font-size: 1.1rem;
     font-weight: 500;
     margin-bottom: 20px;
-    color: var(--text-main);
+    color: var(--text-main)
 }
 
 .bio-summary {
     font-size: 1rem;
     line-height: 1.7;
     color: #444;
-    text-align: justify;
+    text-align: justify
+}
+
+.bio-portrait{
+    width:100%;
+    display:block;
 }
 
 .bio-portrait img {
@@ -1495,21 +1591,21 @@ body.no-scroll {
     height: auto;
     border-radius: 4px;
     filter: grayscale(100%);
-    transition: filter 0.5s ease;
+    transition: filter .5s ease
 }
 
 .bio-portrait img:hover {
-    filter: grayscale(0%);
+    filter: grayscale(0%)
 }
 
 .divider-subtle {
     border: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.08);
-    margin: 60px 0;
+    margin: 60px 0
 }
 
 .bio-section {
-    margin-bottom: 80px;
+    margin-bottom: 80px
 }
 
 .section-title {
@@ -1518,7 +1614,7 @@ body.no-scroll {
     margin-bottom: 30px;
     padding-bottom: 15px;
     border-bottom: 2px solid var(--text-main);
-    display: inline-block;
+    display: inline-block
 }
 
 .timeline-block {
@@ -1526,7 +1622,7 @@ body.no-scroll {
     grid-template-columns: 150px 1fr;
     gap: 30px;
     margin-bottom: 30px;
-    align-items: baseline;
+    align-items: baseline
 }
 
 .timeline-year {
@@ -1536,14 +1632,14 @@ body.no-scroll {
     text-align: right;
     border-right: 1px solid #ddd;
     padding-right: 20px;
-    height: 100%;
+    height: 100%
 }
 
 .timeline-text p {
     font-size: 1rem;
     line-height: 1.6;
     color: #333;
-    margin: 0;
+    margin: 0
 }
 
 .research-grid {
@@ -1552,41 +1648,41 @@ body.no-scroll {
     gap: 40px;
     background: #f4f4f4;
     padding: 30px;
-    border-radius: 8px;
+    border-radius: 8px
 }
 
 .research-item h3 {
     font-family: var(--font-serif);
     font-size: 1.2rem;
-    margin-bottom: 15px;
+    margin-bottom: 15px
 }
 
 .clean-list {
     list-style: none;
-    padding: 0;
+    padding: 0
 }
 
 .clean-list li {
     margin-bottom: 8px;
     padding-left: 15px;
-    position: relative;
+    position: relative
 }
 
 .clean-list li::before {
     content: "•";
     position: absolute;
     left: 0;
-    color: var(--text-muted);
+    color: var(--text-muted)
 }
 
 .fact-list {
     list-style: none;
-    border-left: 2px solid #eee;
+    border-left: 2px solid #eee
 }
 
 .fact-list li {
     padding: 10px 0 10px 20px;
-    position: relative;
+    position: relative
 }
 
 .fact-list li::before {
@@ -1598,26 +1694,26 @@ body.no-scroll {
     height: 10px;
     background: #fff;
     border: 2px solid var(--text-muted);
-    border-radius: 50%;
+    border-radius: 50%
 }
 
 .section-desc {
     margin-bottom: 30px;
     color: var(--text-muted);
-    font-size: 0.95rem;
+    font-size: 0.95rem
 }
 
 .collaborators-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 25px
 }
 
 .collab-card {
     border: 1px solid #eee;
     padding: 20px;
     border-radius: 6px;
-    background: #fff;
+    background: #fff
 }
 
 .collab-role {
@@ -1626,20 +1722,20 @@ body.no-scroll {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text-muted);
-    margin-bottom: 5px;
+    margin-bottom: 5px
 }
 
 .collab-name {
     display: block;
     font-size: 1.1rem;
     margin-bottom: 10px;
-    font-family: var(--font-serif);
+    font-family: var(--font-serif)
 }
 
 .collab-desc {
     font-size: 0.85rem;
     color: #666;
-    line-height: 1.5;
+    line-height: 1.5
 }
 
 .bio-statement {
@@ -1647,7 +1743,7 @@ body.no-scroll {
     padding: 60px 10%;
     background: #fff;
     border-top: 1px solid #eee;
-    margin-top: 60px;
+    margin-top: 60px
 }
 
 .bio-statement blockquote {
@@ -1655,29 +1751,29 @@ body.no-scroll {
     font-size: 1.4rem;
     font-style: italic;
     color: #555;
-    line-height: 1.5;
+    line-height: 1.5
 }
 
-@media (max-width: 900px) {
+@media (max-width:900px) {
     .bio-intro {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 30px;
+        gap: 30px
     }
 
     .bio-intro h1 {
-        font-size: 2.5rem;
+        font-size: 2.5rem
     }
 
     .bio-portrait {
         order: -1;
         max-width: 300px;
-        margin: 0 auto;
+        margin: 0 auto
     }
 
     .timeline-block {
         grid-template-columns: 1fr;
-        gap: 5px;
+        gap: 5px
     }
 
     .timeline-year {
@@ -1685,10 +1781,10 @@ body.no-scroll {
         border-right: none;
         padding-right: 0;
         color: var(--text-main);
-        font-size: 1rem;
+        font-size: 1rem
     }
 
     .research-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr
     }
 }
