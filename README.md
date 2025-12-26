@@ -1,2 +1,2 @@
 cd mario-paulo-
-npm run dev 
+npx sanity deploy

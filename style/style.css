@@ -106,26 +106,35 @@ body {
 
 .hero {
     min-height: 88vh;
-    background: url('../img/background_home.png') center/cover no-repeat;
+    /* Mantemos a imagem padrão como fallback */
+    background-image: url('../img/background_home.png'); 
+    /* Propriedades separadas garantem que a troca via JS não quebre o estilo */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
     display: flex;
     align-items: center;
     padding: 0 10%;
     position: relative;
     color: var(--white);
-    overflow: hidden
+    overflow: hidden;
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(12, 12, 12, 0.36), rgba(12, 12, 12, 0.06));
-    pointer-events: none
+    background: linear-gradient(90deg, rgba(12, 12, 12, 0.5), rgba(12, 12, 12, 0.1));
+    pointer-events: none;
+    /* Adicionamos um z-index para garantir que fique entre a foto e o texto */
+    z-index: 1; 
 }
 
 .hero-content {
     position: relative;
     max-width: 760px;
-    z-index: 4
+    /* Mantemos o z-index alto para o texto ficar sempre legível sobre a imagem */
+    z-index: 4; 
 }
 
 .hero-content .small-tag {
