@@ -9,6 +9,7 @@ export default {
     { name: 'abordagem', title: 'Abordagem Literária' },
     { name: 'atuacao', title: 'Participação/Atuação' },
     { name: 'colaboradores', title: 'Colaboradores' },
+    { name: 'declaracao', title: 'Frases Motivacionais' },
   ],
   fields: [
     /* --- ABA: PERFIL PRINCIPAL --- */
@@ -66,13 +67,6 @@ export default {
       description: 'Adicione os tópicos de interesse individualmente',
       type: 'array',
       group: 'abordagem',
-      of: [{ type: 'string' }],
-    },
-    {
-      name: 'literaryApproach',
-      title: 'Abordagem Literária',
-      type: 'array',
-      group: 'abordagem',
       of: [
         {
           type: 'object',
@@ -82,6 +76,13 @@ export default {
           ]
         }
       ]
+    },
+    {
+      name: 'literaryApproach',
+      title: 'Abordagem Literária',
+      type: 'array',
+      group: 'abordagem',
+      of: [{ type: 'text' }],
     },
 
     /* --- ABA: PARTICIPAÇÃO E ATUAÇÃO --- */
@@ -123,6 +124,12 @@ export default {
           }
         }
       ]
-    }
+    },
+    {
+      name: 'motivationalQuotes',
+      title: 'Frases Motivacionais',
+      type: 'text',
+      group: 'declaracao',
+    },
   ]
 }
