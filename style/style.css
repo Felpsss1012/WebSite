@@ -25,20 +25,15 @@
     box-sizing: border-box
 }
 
-@media (prefers-reduced-motion:reduce) {
-    * {
-        transition: none !important;
-        animation: none !important;
-    }
-}
-
 body {
     font-family: var(--font-sans);
     background-color: var(--bg-light);
     color: var(--text-main);
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
-    letter-spacing: var(--tracking-body)
+    letter-spacing: var(--tracking-body);
+    overflow-x: hidden;
+    /* Isso impede o scroll lateral no mobile */
 }
 
 .main-header {
@@ -107,12 +102,12 @@ body {
 .hero {
     min-height: 88vh;
     /* Mantemos a imagem padrão como fallback */
-    background-image: url('../img/background_home.png'); 
+    background-image: url('../img/background_home.png');
     /* Propriedades separadas garantem que a troca via JS não quebre o estilo */
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    
+
     display: flex;
     align-items: center;
     padding: 0 10%;
@@ -127,14 +122,14 @@ body {
     background: linear-gradient(90deg, rgba(12, 12, 12, 0.5), rgba(12, 12, 12, 0.1));
     pointer-events: none;
     /* Adicionamos um z-index para garantir que fique entre a foto e o texto */
-    z-index: 1; 
+    z-index: 1;
 }
 
 .hero-content {
     position: relative;
     max-width: 760px;
     /* Mantemos o z-index alto para o texto ficar sempre legível sobre a imagem */
-    z-index: 4; 
+    z-index: 4;
 }
 
 .hero-content .small-tag {
@@ -457,10 +452,15 @@ body {
     gap: 20px
 }
 
-.obras-wrapper {
-    position: relative;
-    width: 100%;
-    transition: all .5s ease
+.obras-wrapper,
+.obras-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    /* Centraliza se tiver poucos itens */
+    align-items: stretch;
+    /* ESSENCIAL: Faz todos os cards terem a altura do maior card */
 }
 
 .obras-grid {
@@ -472,13 +472,22 @@ body {
 }
 
 .obra-card {
-    flex: 0 0 350px;
+    flex: 1 0 300px;
+    max-width: 400px;
+    /* Impede que fiquem gigantes em telas largas */
+    display: flex;
+    /* Habilita flexbox interno */
+    flex-direction: column;
+    /* Organiza imagem em cima, texto embaixo */
     background: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.98));
     border-radius: 14px;
-    padding: 20px;
+    padding: 0;
+    /* Removi o padding geral para a imagem encostar na borda */
     box-shadow: 0 12px 36px rgba(12, 12, 12, 0.06);
     border: var(--border-hair) solid rgba(0, 0, 0, 0.04);
-    transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s
+    transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s;
+    overflow: hidden;
+    /* Garante que a imagem respeite o border-radius */
 }
 
 .obra-card:hover {
@@ -543,34 +552,6 @@ body {
     right: -60px
 }
 
-@media (max-width:1300px) {
-    .obras-nav.prev {
-        left: 10px
-    }
-
-    .obras-nav.next {
-        right: 10px
-    }
-
-    .obras-wrapper {
-        padding: 0 20px
-    }
-}
-
-@media (max-width:768px) {
-    .obra-card {
-        flex: 0 0 85vw
-    }
-
-    .obras-nav {
-        display: none !important
-    }
-
-    .obras-wrapper {
-        overflow-x: auto !important
-    }
-}
-
 .btn-buy {
     background: var(--text-main);
     color: var(--white);
@@ -580,45 +561,29 @@ body {
     font-size: 0.8rem
 }
 
-@media (max-width:900px) {
-    .container-trajetoria {
-        grid-template-columns: 1fr;
-        gap: 50px
-    }
-
-    .hero {
-        padding: 0 5%;
-        text-align: center
-    }
-
-    .hero-overlay {
-        background: rgba(0, 0, 0, 0.6)
-    }
-
-    .btn-secondary {
-        margin: 15px 0 0 0;
-        display: block
-    }
-}
-
 .obra-img-container {
     position: relative;
     width: 100%;
-    height: 420px;
-    overflow: hidden;
-    background: #f6f6f6;
-    display: block;
-    border-radius: 8px
+    height: 300px;
+    /* Altura fixa para alinhar o topo de todos os textos */
+    flex-shrink: 0;
+    /* Impede a imagem de encolher */
+    background: #f9f7f2;
+    /* Cor de fundo suave caso a imagem seja transparente */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .obra-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     display: block;
+    object-fit: cover;
+    /* Garante preenchimento bonito */
+    object-position: center top;
+    /* Foca no topo/centro da capa */
     transition: transform .5s cubic-bezier(.16, 1, .3, 1);
-    border-radius: 8px
 }
+
 
 .obra-card:hover .obra-img {
     transform: scale(1.03)
@@ -677,29 +642,49 @@ body {
 }
 
 .obra-info {
-    padding: 18px 20px 26px 20px;
+    padding: 24px 24px 28px 24px;
     display: flex;
     flex-direction: column;
-    gap: 6px
+    flex-grow: 1;
+    /* Faz esta área crescer para ocupar todo espaço vazio */
+    justify-content: flex-start;
 }
 
 .obra-categoria {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--accent);
+    /* Usando sua variável de cor de destaque */
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
 }
 
 .obra-titulo {
     font-family: var(--font-serif);
-    font-size: 1.2rem;
+    font-size: 1.35rem;
+    line-height: 1.3;
     color: var(--text-main);
-    margin: 4px 0
+    margin: 0 0 16px 0;
+
+    /* Limita a 2 ou 3 linhas para evitar quebra de layout excessiva */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .obra-ano {
     color: var(--text-muted);
-    font-size: 0.95rem
+    font-size: 0.9rem;
+    margin-top: auto;
+    /* IMPORTANTE: Empurra este elemento para o final absoluto do card */
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .footer-institucional {
@@ -785,22 +770,6 @@ body {
     padding-top: 20px
 }
 
-@media (max-width:900px) {
-    .footer-container {
-        grid-template-columns: 1fr;
-        gap: 40px
-    }
-
-    .footer-institucional {
-        padding: 60px 24px 40px 24px;
-        text-align: left
-    }
-
-    .footer-description {
-        max-width: 100%
-    }
-}
-
 .main-header.style-fixed .nav-links a,
 .main-header.style-fixed .logo,
 .main-header.style-fixed .logo span {
@@ -811,13 +780,7 @@ body {
     border-bottom: 1px solid var(--text-main)
 }
 
-.obra-img {
-    width: 100%;
-    height: 350px;
-    object-fit: cover;
-    border-bottom: 1px solid #eee;
-    display: block
-}
+
 
 .catalogo-main {
     padding: 60px 5% 100px 5%;
@@ -1033,11 +996,13 @@ body.no-scroll {
 #obraModal {
     border: none;
     border-radius: 12px;
+    width: 90%;
+    max-width: 950px;
+    height: 85vh; /* Altura fixa em 85% da tela para garantir consistência */
+    max-height: 700px;
     padding: 0;
-    max-width: 900px;
-    width: 92%;
-    margin: auto;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32)
+    overflow: hidden; /* Importante: esconde o scroll externo do dialog */
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
 }
 
 #obraModal::backdrop {
@@ -1095,16 +1060,6 @@ body.no-scroll {
     color: var(--text-main)
 }
 
-@media (max-width:768px) {
-    .modal-grid {
-        grid-template-columns: 1fr
-    }
-
-    .modal-img-side {
-        height: 250px
-    }
-}
-
 .clipped-art {
     -webkit-clip-path: polygon(0 0, 100% 0, 100% 82%, 60% 100%, 0 82%);
     clip-path: polygon(0 0, 100% 0, 100% 82%, 60% 100%, 0 82%);
@@ -1132,7 +1087,8 @@ body.no-scroll {
     opacity: 0;
     transform: translateY(18px);
     transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
-    z-index: 10;  /* Garantir que a imagem não está atrás de outros elementos */
+    z-index: 10;
+    /* Garantir que a imagem não está atrás de outros elementos */
 }
 
 
@@ -1301,63 +1257,168 @@ body.no-scroll {
 }
 
 .modal-wrapper {
-    position: relative;
     display: flex;
     flex-direction: row;
+    min-height: 550px;
+    /* Altura mínima para impor presença */
     align-items: stretch;
-    overflow: hidden;
+    height: 100%; /* Ocupa toda a altura do modal */
     width: 100%;
-    max-height: calc(90vh - 24px)
 }
 
 .modal-close-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: transparent;
-    border: none;
-    font-size: 1.9rem;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.05);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
     color: var(--text-main);
-    cursor: pointer;
-    z-index: 20;
-    line-height: 1;
-    padding: 6px
+}
+
+.modal-close-btn:hover {
+    background: var(--text-main);
+    color: var(--white);
+    transform: rotate(90deg);
 }
 
 .modal-image-wrapper {
-    flex: 1 1 45%;
-    background: #e5e5e5;
-    min-height: 320px;
-    display: block
+    flex: 0 0 40%;
+    background-color: #f4f1ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: sticky; /* Mantém a imagem parada enquanto o texto rola */
+    top: 0;
 }
 
 .modal-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block
+    max-height: 400px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    /* Nunca distorcer a imagem */
+    box-shadow: -10px 15px 30px rgba(0, 0, 0, 0.15);
+    /* Sombra realista de livro */
+    border-radius: 6px;
+    /* Cantos da capa levemente arredondados */
+    transform: perspective(1000px) rotateY(-5deg);
+    /* Leve efeito 3D */
+    transition: transform 0.5s ease;
+}
+
+.modal-image-wrapper:hover img {
+    transform: perspective(1000px) rotateY(0deg) scale(1.02);
 }
 
 .modal-content {
-    flex: 1.2 1 55%;
-    padding: 40px;
+    flex: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: auto
+    flex-direction: column; /* Organiza título, tabs e conteúdo em coluna */
+    padding: 40px;
+    background: #fff;
+    overflow: hidden; /* Evita que a coluna toda saia do modal */
 }
 
 .meta-tag {
-    display: inline-block;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    background: #eee;
-    padding: 4px 8px;
+    background-color: var(--bg-light);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.7rem;
+    padding: 6px 12px;
     border-radius: 4px;
-    margin-right: 10px;
-    margin-bottom: 15px;
-    color: #555
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.modal-tabs {
+    display: flex;
+    gap: 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    padding-bottom: 0;
+}
+
+.modal-tabs button {
+    background: none;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 0 0 12px 0;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.modal-tabs button::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: var(--accent);
+    /* Cor bronze/dourada */
+    transition: width 0.3s ease;
+}
+
+.modal-tabs button.active {
+    color: var(--text-main);
+}
+
+.modal-tabs button.active::after {
+    width: 100%;
+}
+
+.modal-tabs button:hover {
+    color: var(--accent);
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeInUp 0.4s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.tab-content-container {
+    flex: 1; /* Ocupa o restante do espaço disponível */
+    overflow-y: auto; /* Habilita o scroll apenas aqui */
+    padding-right: 15px; /* Espaço para a barra de rolagem não cobrir o texto */
+    margin-top: 20px;
+}
+
+/* Estilização da barra de rolagem para ficar elegante */
+.tab-content-container::-webkit-scrollbar {
+    width: 6px;
+}
+.tab-content-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.modal-info header {
+    margin-bottom: 30px;
+}
+
+.modal-info h2#modalTitle {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    line-height: 1.2;
+    color: var(--text-main);
+    margin-top: 15px;
+    margin-bottom: 5px;
 }
 
 .modal-info h2 {
@@ -1378,6 +1439,14 @@ body.no-scroll {
     overflow-y: auto
 }
 
+.modal-synopsis p {
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #444;
+    text-align: justify;
+}
+
 .modal-actions {
     display: flex;
     gap: 22px;
@@ -1395,11 +1464,6 @@ body.no-scroll {
     background: transparent;
     border: 1px solid rgba(0, 0, 0, 0.06);
     color: var(--text-main)
-}
-
-.modal-content {
-    padding-top: 34px;
-    padding-bottom: 34px
 }
 
 .reviews-list {
@@ -1453,45 +1517,66 @@ body.no-scroll {
     gap: 12px !important
 }
 
-@media (max-width:900px) {
-    .reviews-list {
-        max-height: 40vh;
-        gap: 12px;
-        padding-right: 4px
-    }
-
-    .review-card {
-        padding: 14px;
-        min-height: 64px
-    }
-
-    .modal-actions {
-        gap: 14px;
-        flex-wrap: wrap
-    }
+.review-form {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-.review-form {
-    margin-top: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px
+.review-form label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-main);
 }
 
 .review-form textarea {
     width: 100%;
-    min-height: 84px;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    border: 1px solid #e6e6e6;
-    padding: 10px;
-    resize: vertical;
-    font-family: inherit
+    padding: 12px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+    background: #fff;
+    min-height: 100px;
+}
+
+.review-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(176, 139, 79, 0.1);
 }
 
 .review-form .form-actions {
     display: flex;
     gap: 10px;
     align-items: center
+}
+
+.review-stars {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.review-stars .star {
+    font-size: 1.5rem;
+    color: #ddd;
+    /* Estrela vazia cinza */
+    transition: color 0.2s;
+}
+
+.review-stars .star.filled,
+.review-stars .star:hover,
+.review-stars .star:hover~.star {
+    color: var(--gold-matte);
+    /* Estrela cheia dourada */
 }
 
 .btn {
@@ -1515,26 +1600,6 @@ reviews-list::-webkit-scrollbar {
     border-radius: 8px
 }
 
-@media (max-width:900px) {
-    .modal-wrapper {
-        grid-template-columns: 1fr
-    }
-
-    .modal-image-wrapper {
-        height: 220px;
-        min-height: 220px
-    }
-
-    .modal-content {
-        padding: 18px
-    }
-
-    .review-stars .star {
-        width: 22px;
-        height: 22px
-    }
-}
-
 .modal-wrapper .modal-content {
     justify-content: flex-start;
     padding-top: 28px;
@@ -1544,12 +1609,6 @@ reviews-list::-webkit-scrollbar {
 .modal-actions {
     margin-top: 10px;
     justify-content: flex-start
-}
-
-@media (min-width:900px) {
-    .modal-actions {
-        justify-content: flex-end
-    }
 }
 
 .bio-container {
@@ -1590,9 +1649,9 @@ reviews-list::-webkit-scrollbar {
     text-align: justify
 }
 
-.bio-portrait{
-    width:100%;
-    display:block;
+.bio-portrait {
+    width: 100%;
+    display: block;
 }
 
 .bio-portrait img {
@@ -1763,37 +1822,191 @@ reviews-list::-webkit-scrollbar {
     line-height: 1.5
 }
 
-@media (max-width:900px) {
-    .bio-intro {
+/* =========================================
+   SISTEMA DE RESPONSIVIDADE COMPLETO E OTIMIZADO
+   ========================================= */
+
+/* 1. Ajustes para Telas Grandes / Notebooks (max-width: 1200px) */
+@media (max-width: 1200px) {
+
+    .container-trajetoria,
+    .container-obras,
+    .catalogo-main {
+        padding: 0 4%;
+    }
+
+    .hero h1 {
+        font-size: 3.8rem;
+    }
+}
+
+/* 2. Tablets e iPads (max-width: 992px) */
+@media (max-width: 992px) {
+
+    /* Header */
+    .main-header {
+        padding: 15px 4%;
+    }
+
+    .nav-links {
+        gap: 20px;
+    }
+
+    /* Trajetória / Sobre */
+    .container-trajetoria {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .trajetoria-image-wrapper {
+        order: -1;
+        /* Foto em cima do texto */
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .trajetoria-metricas {
+        justify-content: center;
+    }
+
+    /* Modal */
+    #obraModal {
+        width: 92%;
+        max-height: 85vh;
+    }
+
+    .modal-wrapper {
+        height: auto;
+    }
+}
+
+/* 3. Smartphones Grandes e Tablets Pequenos (max-width: 768px) */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.8rem;
+    }
+
+    .main-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Grids de Obras */
+    .obras-grid,
+    .obras-wrapper {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    /* Footer */
+    .footer-container {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 30px
+        gap: 30px;
+    }
+}
+
+/* 4. Celulares Pequenos (max-width: 480px) */
+@media (max-width: 480px) {
+    .hero {
+        padding-top: 140px;
     }
 
-    .bio-intro h1 {
-        font-size: 2.5rem
+    .hero h1 {
+        font-size: 2.2rem;
     }
 
-    .bio-portrait {
-        order: -1;
-        max-width: 300px;
-        margin: 0 auto
+    .btn-container {
+        flex-direction: column;
+        width: 100%;
+        padding: 0 10px;
     }
 
-    .timeline-block {
-        grid-template-columns: 1fr;
-        gap: 5px
+    .btn {
+        width: 100%;
+        text-align: center;
     }
 
-    .timeline-year {
-        text-align: left;
-        border-right: none;
-        padding-right: 0;
-        color: var(--text-main);
-        font-size: 1rem
+    /* Ajuste Crítico do Modal para Mobile */
+    #obraModal {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        margin: 0;
     }
 
-    .research-grid {
-        grid-template-columns: 1fr
+    .modal-wrapper {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .modal-image-wrapper {
+        height: 250px;
+        flex: none;
+        padding: 20px;
+    }
+
+    .modal-image-wrapper img {
+        max-height: 100%;
+        transform: none !important;
+    }
+
+    .modal-content {
+        padding: 20px;
+        overflow-y: visible;
+    }
+
+    /* Filtros do Catálogo */
+    .catalogo-controls {
+        flex-direction: column;
+    }
+
+    .search-box,
+    .filters-box select {
+        width: 100%;
+    }
+}
+
+/* 5. Otimização para Touch (Celulares/Tablets) */
+@media (hover: none) {
+
+    /* No celular, os botões das obras devem aparecer sempre */
+    .obra-overlay {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .obra-card:hover {
+        transform: none;
+    }
+}
+
+/* 6. Acessibilidade (Redução de Movimento) */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #obraModal {
+        height: 95vh;
+        max-height: none;
+    }
+    .modal-wrapper {
+        flex-direction: column;
+    }
+    .modal-image-wrapper {
+        flex: none;
+        height: 300px;
+        position: relative;
+    }
+    .modal-content {
+        height: calc(100% - 300px);
     }
 }

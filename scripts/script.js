@@ -1,15 +1,3 @@
-/**
- * SCRIPT PRINCIPAL - MARIO PAULO (Refatorado)
- * * CHANGELOG:
- * - Implementado fallback robusto para data/obras.json.
- * - Adicionado retry logic no fetch.
- * - Catálogo: Deep-linking (URL params), busca com debounce, filtros combinados.
- * - Modal: Focus trap, no-scroll body lock, lazy image, acessibilidade ARIA completa.
- * - Slider: RequestAnimationFrame, keyboard nav, pause on hover.
- * - Leitura: Redirecionamento para leitura.html (não modal).
- * - Helpers: escapeHtml, debounce, setupButton seguro.
- */
-
 /* =========================
    CONFIGURAÇÃO & CONSTANTES
    ========================= */
