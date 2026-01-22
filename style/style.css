@@ -233,12 +233,45 @@ body {
     transform: translateY(-4px);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
     border-color: rgba(176, 139, 79, 0.18);
-    box-shadow: 0 30px 70px rgba(6, 6, 6, 0.32)
+    box-shadow: 0 30px 70px rgba(6, 6, 6, 0.32);
+    /* color: #0b0b0b; */
 }
 
 .btn-secondary:focus-visible {
     outline: 3px solid rgba(176, 139, 79, 0.16);
     outline-offset: 4px
+}
+
+.btn-fourth {
+    background: rgba(16, 16, 16, 0.78);
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 12px 30px;
+    border-radius: 999px;
+    font-weight: 700;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 8px 28px rgba(6, 6, 6, 0.28);
+    transition: var(--transition)
+}
+
+.btn-fourth:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-color: rgba(176, 139, 79, 0.18);
+    box-shadow: 0 30px 70px rgba(6, 6, 6, 0.32);
+    color: #0b0b0b;
+}
+
+.btn-fourth:focus-visible {
+    outline: 3px solid rgba(176, 139, 79, 0.16);
+    outline-offset: 4px
+}
+
+.btn-fourth .read-inline {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--text-main)
 }
 
 .obras-header .btn-tertiary {
@@ -993,28 +1026,42 @@ body.no-scroll {
     overflow: hidden
 }
 
+/* ==========================================================================
+   MODAL DE OBRA - REFATORADO
+   ========================================================================== */
+
 #obraModal {
     border: none;
     border-radius: 12px;
     width: 90%;
     max-width: 950px;
-    height: 85vh; /* Altura fixa em 85% da tela para garantir consistência */
+    /* Usamos min-height para garantir presença e height para consistência */
+    height: 85vh; 
     max-height: 700px;
     padding: 0;
-    overflow: hidden; /* Importante: esconde o scroll externo do dialog */
-    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    background-color: var(--bg-light);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden; /* Mantém o scroll apenas onde deve estar */
 }
 
 #obraModal::backdrop {
     background: rgba(0, 0, 0, 0.78);
-    backdrop-filter: blur(3px)
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
 }
 
 .modal-grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    max-height: 85vh;
-    gap: 18px
+    /* Mudança crucial: 1fr no texto garante que ele ocupe o espaço restante sem empurrar a imagem */
+    grid-template-columns: 1fr 1.5fr; 
+    height: 100%; /* Ocupa toda a altura do pai (#obraModal) */
+    gap: 0; /* Removido o gap para controle total via padding interno */
+}
+
+.modal-img-side {
+    height: 100%;
+    overflow: hidden;
+    background-color: #f0ede6; /* Cor de fundo caso a imagem demore a carregar */
 }
 
 .modal-img-side img {
@@ -1022,21 +1069,33 @@ body.no-scroll {
     height: 100%;
     object-fit: cover;
     display: block;
-    border-radius: 8px
+    /* Removido border-radius aqui para alinhar perfeitamente à borda do modal */
 }
 
 .modal-text-side {
-    padding: 36px;
-    overflow-y: auto;
+    padding: 40px;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
+    overflow-y: auto; /* O scroll fica restrito apenas ao texto */
+    background: var(--white);
+    position: relative;
 }
 
 .modal-synopsis-container {
     margin: 20px 0;
-    line-height: 1.7;
-    color: var(--text-muted)
+    line-height: 1.8;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    flex-grow: 1; /* Faz a sinopse ocupar o espaço central */
 }
+
+/* ==========================================================================
+   DESAFIO DO DEBATEDOR: O Ponto Cego da Responsividade
+   ========================================================================== */
+/* Se você apenas copiar o código acima, seu modal quebrará em celulares. 
+   Como seu treinador, não posso deixar você ignorar o custo de oportunidade 
+   de um layout que só funciona em desktop. Adicione isto abaixo:
+*/
 
 .reader-overlay {
     position: fixed;
@@ -1256,10 +1315,26 @@ body.no-scroll {
     backdrop-filter: blur(4px)
 }
 
+.modal-overlay {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    overflow-y: auto; /* Permite o scroll na camada de fundo se necessário */
+    padding: 20px 0;
+}
+
 .modal-wrapper {
     display: flex;
     flex-direction: row;
-    min-height: 550px;
+    min-height: 500px;
+    margin: 20px auto;
+    background: var(--white);
+    position: relative;
     /* Altura mínima para impor presença */
     align-items: stretch;
     height: 100%; /* Ocupa toda a altura do modal */
@@ -1323,7 +1398,7 @@ body.no-scroll {
     flex-direction: column; /* Organiza título, tabs e conteúdo em coluna */
     padding: 40px;
     background: #fff;
-    overflow: hidden; /* Evita que a coluna toda saia do modal */
+    overflow: auto; /* Evita que a coluna toda saia do modal */
 }
 
 .meta-tag {
@@ -1460,7 +1535,7 @@ body.no-scroll {
     font-weight: 700
 }
 
-.btn-secondary.read-inline {
+.btn-secondary .read-inline {
     background: transparent;
     border: 1px solid rgba(0, 0, 0, 0.06);
     color: var(--text-main)
@@ -1995,18 +2070,33 @@ reviews-list::-webkit-scrollbar {
 
 @media (max-width: 768px) {
     #obraModal {
-        height: 95vh;
+        height: 92vh;
         max-height: none;
+        width: 95%;
     }
+
+    .modal-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 35vh 1fr;
+        overflow: auto;
+    }
+
     .modal-wrapper {
         flex-direction: column;
+        width: 95%;
+        margin: 10px auto;
+        height: auto; /* Deixa o modal crescer conforme o conteúdo */
+        max-height: none; 
+    }
+
+    .modal-content {
+        overflow-y: visible; /* Garante que o texto não fique preso */
+        padding: 20px;
+        height: calc(100% - 300px);
     }
     .modal-image-wrapper {
         flex: none;
         height: 300px;
         position: relative;
-    }
-    .modal-content {
-        height: calc(100% - 300px);
     }
 }

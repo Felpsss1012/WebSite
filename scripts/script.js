@@ -458,7 +458,7 @@ function updateURL() {
 
 
 /* =========================
-   MODAL SYSTEM (Dialog Nativo + A11y)
+   MODAL SYSTEM (Ajustado para Tabs e Scroll)
    ========================= */
 function initModalSystem() {
     const modal = document.querySelector(CONFIG.selectors.modal);
@@ -466,19 +466,56 @@ function initModalSystem() {
 
     if (!modal) return;
 
-    // Fechar ao clicar no botão X
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
-    // Fechar ao clicar no backdrop (fora do conteúdo)
+    // Fechar ao clicar fora (Backdrop)
     modal.addEventListener('click', (e) => {
-        const rect = modal.getBoundingClientRect();
-        const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-            rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
-        if (!isInDialog) closeModal();
+        if (e.target === modal) closeModal();
     });
 
-    // Fechar com ESC (Nativo do <dialog> mas reforçado para limpar estado)
+    // ESCUTA DE CLIQUES NAS ABAS (TABS)
+    // Isso vai procurar qualquer botão dentro de .modal-tabs
+    modal.addEventListener('click', (e) => {
+        const btn = e.target.closest('.modal-tabs button');
+        if (!btn) return;
+
+        const targetTab = btn.getAttribute('data-tab');
+        
+        // 1. Alterna classes dos botões
+        modal.querySelectorAll('.modal-tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // 2. Alterna visibilidade dos painéis
+        modal.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+        const activePane = modal.querySelector(`#tab-${targetTab}`);
+        if (activePane) {
+            activePane.classList.add('active');
+            
+            // 3. O PULO DO GATO: Reseta o scroll do container para o topo
+            const scrollContainer = modal.querySelector('.tab-content-container');
+            if (scrollContainer) scrollContainer.scrollTop = 0;
+        }
+    });
+
     modal.addEventListener('close', onModalCloseCleanup);
+}
+
+function switchTab(modal, tabId) {
+    // Remove active de todos os botões e panes
+    modal.querySelectorAll('.modal-tabs button').forEach(b => b.classList.remove('active'));
+    modal.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+    // Adiciona active no selecionado
+    const activeBtn = modal.querySelector(`button[data-tab="${tabId}"]`);
+    const activePane = modal.querySelector(`#tab-${tabId}`);
+
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activePane) {
+        activePane.classList.add('active');
+        // PONTO CHAVE: Garante que ao trocar de aba, o scroll volte para o topo
+        const scrollContainer = modal.querySelector('.tab-content-container');
+        if (scrollContainer) scrollContainer.scrollTop = 0;
+    }
 }
 
 function openModal(work, triggerElement) {
@@ -487,91 +524,73 @@ function openModal(work, triggerElement) {
 
     state.lastFocusedElement = triggerElement;
 
-    // Popula dados com segurança
+    // Reset para a primeira aba (Sinopse) ao abrir
+    switchTab(modal, 'sinopse');
+
     const els = {
         img: modal.querySelector('#modalImg'),
         title: modal.querySelector('#modalTitle'),
         year: modal.querySelector('#modalYear'),
         cat: modal.querySelector('#modalCategory'),
-        synopsis: modal.querySelector('#modalSynopsis'),
+        synopsis: modal.querySelector('#modalSynopsis'), // A sinopse textual
         btnRead: modal.querySelector('#btnRead'),
-        btnBuy: modal.querySelector('#btnBuy')
+        btnBuy: modal.querySelector('#btnBuy'),
+        // Aba de avaliações (se você tiver um container para injetar elas)
+        reviews: modal.querySelector('#tab-avaliacoes') 
     };
 
     if (els.img) {
-        els.img.src = ''; // Limpa anterior
-        els.img.src = work.image;
+        els.img.src = work.image || '';
         els.img.alt = `Capa de ${work.title}`;
     }
+    
     if (els.title) els.title.textContent = work.title;
-    if (els.year) els.year.textContent = work.year;
-    if (els.cat) els.cat.textContent = capitalize(work.category);
-    if (els.synopsis) els.synopsis.textContent = work.synopsis;
+    if (els.year) els.year.textContent = work.year || 'N/A';
+    if (els.cat) els.cat.textContent = work.categorias ? work.categorias.join(', ') : 'Geral';
+    
+    // Injeta a sinopse. Se for HTML vindo do Sanity, use innerHTML com cuidado.
+    if (els.synopsis) els.synopsis.textContent = work.sinopse;
 
-    // Configura botões
-    // Ler Online: redireciona para página de leitura se houver slug/link
+    // Lógica de Avaliações (Exemplo: Se a obra tiver avaliações no objeto 'work')
+    if (els.reviews && work.reviews) {
+        els.reviews.innerHTML = work.reviews.map(rev => `<div class="review-item">${rev}</div>`).join('');
+    }
+
+    // Configuração de botões (Mantida sua lógica)
     if (els.btnRead) {
-        if (work.linkRead || (work.slug && work.linkRead !== '#')) {
-            els.btnRead.style.display = 'inline-flex';
-            // Se tiver link externo direto, usa ele. Se não, usa rota interna com slug.
-            const targetUrl = work.slug ? `${CONFIG.routes.leitura}?obra=${work.slug}` : work.linkRead;
-            els.btnRead.href = targetUrl;
-            els.btnRead.target = work.slug ? '_self' : '_blank'; // Interno abre na mesma aba (SPA feel) ou nova
-        } else {
-            els.btnRead.style.display = 'none';
+        const hasLink = work.linkRead && work.linkRead !== '#';
+        els.btnRead.style.display = (hasLink || work.slug) ? 'inline-flex' : 'none';
+        if (hasLink || work.slug) {
+            els.btnRead.href = work.slug ? `${CONFIG.routes.leitura}?obra=${work.slug}` : work.linkRead;
+            els.btnRead.target = work.slug ? '_self' : '_blank';
         }
     }
 
-    // Amazon
-    setupButton(els.btnBuy, work.linkAmazon);
-
-    // Show Modal
-    if (typeof modal.showModal === 'function') {
-        // Workaround: garante centralização consistente mesmo com body scrolled
-        document.body.classList.add('no-scroll'); // bloqueia scroll do body
-
-        // Mostra o modal e garante centralização relativa à viewport
-        modal.showModal();
-
-        // Garantias extras de posicionamento (CSS já faz isso, mas reforçamos via JS para consistência cross-browser)
-        modal.style.position = 'fixed';
-        modal.style.left = '50%';
-        modal.style.top = '50%';
-        modal.style.transform = 'translate(-50%, -50%)';
-        modal.style.zIndex = '10000';
-
-    } else {
-        modal.setAttribute('open', ''); // Fallback
+    if (els.btnBuy) {
+        if (work.linkAmazon && work.linkAmazon !== '#') {
+            els.btnBuy.href = work.linkAmazon;
+            els.btnBuy.style.display = 'inline-flex';
+        } else {
+            els.btnBuy.style.display = 'none';
+        }
     }
 
-
-    // Lock Scroll & Focus Trap
     document.body.classList.add('no-scroll');
-
-    // Atualiza título da página (SEO/UX)
+    modal.showModal();
+    
+    // SEO/UX
     document.title = `${work.title} | Mario Paulo`;
 }
 
 function closeModal() {
     const modal = document.querySelector(CONFIG.selectors.modal);
-    if (!modal) return;
-
-    if (typeof modal.close === 'function') {
-        modal.close();
-    } else {
-        modal.removeAttribute('open');
-        onModalCloseCleanup();
-    }
+    if (modal) modal.close();
 }
 
 function onModalCloseCleanup() {
     document.body.classList.remove('no-scroll');
-    document.title = 'Catálogo de Obras | Mario Paulo'; // Restaura título
-
-    // Restaura foco
-    if (state.lastFocusedElement) {
-        state.lastFocusedElement.focus();
-    }
+    document.title = 'Catálogo de Obras | Mario Paulo';
+    if (state.lastFocusedElement) state.lastFocusedElement.focus();
 }
 
 /* =========================
@@ -746,24 +765,21 @@ function renderModalReviews(work) {
     const votesEl = document.getElementById('modalVotes');
     const listEl = document.getElementById('modalReviews');
 
-    // média visual (ainda mostramos as 5 estrelas preenchidas com média)
+    // Renderiza média visual (Requer que a função renderStars também adicione o caractere ★)
     renderStars(starsContainer, 5, Math.round(summary.avg || 0));
     approvalEl.textContent = reviews.length ? `${summary.percent}% aprov.` : 'Sem avaliações';
     votesEl.textContent = reviews.length ? `${summary.total} avaliação(ões)` : '';
 
-    // lista de reviews — somente comentário + meta (sem estrelas por item)
+    // Renderiza lista de reviews
     listEl.innerHTML = '';
     if (!reviews.length) {
         listEl.innerHTML = `<div style="color:var(--text-muted)">Seja o primeiro a avaliar esta obra.</div>`;
     } else {
-        // render maior e menos compactado
         reviews.slice().reverse().forEach(r => {
             const rc = document.createElement('div');
             rc.className = 'review-card';
-
             const date = new Date(r.createdAt).toLocaleString();
 
-            // estrutura: comentário principal (texto) + meta abaixo (data e nota opcional)
             rc.innerHTML = `
         <div style="flex:1">
           <div class="comment-text">${escapeHtml(r.comment || '')}</div>
@@ -773,48 +789,68 @@ function renderModalReviews(work) {
           </div>
         </div>
       `;
-
             listEl.appendChild(rc);
         });
     }
 
-    // Rating input (interativo) - mantém o mesmo comportamento anterior
+    // --- CORREÇÃO AQUI ---
+    // Rating input (interativo)
     const ratingInput = document.getElementById('reviewRating');
     ratingInput.innerHTML = '';
+    
     for (let i = 1; i <= 5; i++) {
         const star = document.createElement('span');
         star.className = 'star';
+        star.innerHTML = '★'; // <--- ESTA LINHA FALTAVA. Sem ela, o span tem largura 0.
         star.dataset.value = i;
         star.role = 'radio';
         star.tabIndex = 0;
         ratingInput.appendChild(star);
     }
 
-    // interactive handlers (reutiliza o padrão anterior)
+    // Handlers interativos
     let selectedRating = 0;
     ratingInput.querySelectorAll('.star').forEach(s => {
         s.addEventListener('click', () => {
             selectedRating = Number(s.dataset.value);
-            ratingInput.querySelectorAll('.star').forEach(x => x.classList.toggle('filled', Number(x.dataset.value) <= selectedRating));
+            // Preenche todas as estrelas até a selecionada
+            ratingInput.querySelectorAll('.star').forEach(x => {
+                if (Number(x.dataset.value) <= selectedRating) {
+                    x.classList.add('filled');
+                } else {
+                    x.classList.remove('filled');
+                }
+            });
         });
+        
         s.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); s.click(); }
+            if (e.key === 'Enter' || e.key === ' ') { 
+                e.preventDefault(); 
+                s.click(); 
+            }
         });
     });
 
-    // submit handler
+    // Submit handler
     const submitBtn = document.getElementById('submitReview');
+    // Removemos onclick anterior para evitar múltiplos binds se a função rodar várias vezes
+    submitBtn.onclick = null; 
+    
     submitBtn.onclick = () => {
         const comment = document.getElementById('reviewComment').value;
         if (!selectedRating) {
             alert('Escolha uma nota de 1 a 5 estrelas antes de enviar.');
             return;
         }
-        const arr = addReview(slug, selectedRating, comment);
+        addReview(slug, selectedRating, comment);
+        
+        // Limpa formulário
         document.getElementById('reviewComment').value = '';
         selectedRating = 0;
         ratingInput.querySelectorAll('.star').forEach(x => x.classList.remove('filled'));
-        renderModalReviews(work); // rerender
+        
+        // Re-renderiza para mostrar o novo comentário
+        renderModalReviews(work); 
     };
 
     const clearBtn = document.getElementById('clearReviews');
@@ -829,16 +865,37 @@ function renderModalReviews(work) {
 
 
 /* Tab switching */
+/* Substitua ou atualize seu listener de tabs por este */
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('.modal-tabs button');
     if (!btn) return;
+    
     const parent = btn.parentElement;
-    parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    parent.querySelectorAll('button').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false'); // Melhora acessibilidade
+    });
+    
     btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
 
-    const tab = btn.dataset.tab;
-    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-    document.getElementById(`tab-${tab}`).classList.add('active');
+    const tabId = btn.dataset.tab;
+    document.querySelectorAll('.tab-pane').forEach(p => {
+        p.classList.remove('active');
+        p.setAttribute('aria-hidden', 'true');
+    });
+
+    const activePane = document.getElementById(`tab-${tabId}`);
+    if (activePane) {
+        activePane.classList.add('active');
+        activePane.setAttribute('aria-hidden', 'false');
+        
+        // FOCO AQUI: Se for a aba de reviews, reseta o scroll da lista
+        if (tabId === 'reviews') {
+            const listEl = document.getElementById('modalReviews');
+            if (listEl) listEl.scrollTop = 0;
+        }
+    }
 });
 
 /* Hook: quando abrir modal, renderiza reviews e garante Ler Online */
