@@ -3,6 +3,7 @@
     --text-main: #1a1a1a;
     --text-muted: #666;
     --gold-matte: #b08b4f;
+    --dark-gold-matte: #634E2D;
     --bronze-matte: #8c6a3a;
     --accent: var(--bronze-matte);
     --white: #ffffff;
@@ -1635,23 +1636,35 @@ body.no-scroll {
 
 .review-stars {
     display: flex;
+    flex-direction: row-reverse; /* TRUQUE: Inverte a ordem visual */
+    justify-content: flex-end;   /* Alinha à esquerda novamente */
     gap: 5px;
     margin-bottom: 15px;
     cursor: pointer;
 }
 
 .review-stars .star {
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Aumentei um pouco para a hitbox ficar melhor */
     color: #ddd;
-    /* Estrela vazia cinza */
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.1s;
+    user-select: none;
+    line-height: 1;
 }
 
-.review-stars .star.filled,
+/* O seletor ~ agora funciona corretamente porque a 1ª estrela 
+   é tecnicamente a 'última' no fluxo do row-reverse */
 .review-stars .star:hover,
-.review-stars .star:hover~.star {
+.review-stars .star:hover ~ .star,
+.review-stars .star.filled,
+.review-stars .star.filled ~ .star {
     color: var(--gold-matte);
-    /* Estrela cheia dourada */
+}
+
+/* Efeito de destaque no hover (Dark Gold) */
+.review-stars .star:hover,
+.review-stars .star:hover ~ .star {
+    color: var(--gold-matte);
+    transform: scale(1.1); /* Feedback visual de interação */
 }
 
 .btn {

@@ -765,8 +765,18 @@ function renderModalReviews(work) {
     const votesEl = document.getElementById('modalVotes');
     const listEl = document.getElementById('modalReviews');
 
-    // Renderiza média visual (Requer que a função renderStars também adicione o caractere ★)
-    renderStars(starsContainer, 5, Math.round(summary.avg || 0));
+    // Função auxiliar para garantir que as estrelas da média também tenham o caractere
+    // (Se sua função renderStars externa já faz isso, pode ignorar esta parte interna)
+    if (starsContainer) {
+        starsContainer.innerHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            const s = document.createElement('span');
+            s.className = 'star' + (i <= Math.round(summary.avg || 0) ? ' filled' : '');
+            s.innerHTML = '★'; // Garante o caractere visual
+            starsContainer.appendChild(s);
+        }
+    }
+    
     approvalEl.textContent = reviews.length ? `${summary.percent}% aprov.` : 'Sem avaliações';
     votesEl.textContent = reviews.length ? `${summary.total} avaliação(ões)` : '';
 
@@ -793,48 +803,50 @@ function renderModalReviews(work) {
         });
     }
 
-    // --- CORREÇÃO AQUI ---
-    // Rating input (interativo)
+    // --- LÓGICA DE INTERAÇÃO (HOVER E CLICK) ---
     const ratingInput = document.getElementById('reviewRating');
     ratingInput.innerHTML = '';
     
-    for (let i = 1; i <= 5; i++) {
+    let selectedRating = 0; // Armazena a nota confirmada pelo clique
+
+    // Função para pintar as estrelas visualmente
+    const paintStars = (rating) => {
+        ratingInput.querySelectorAll('.star').forEach(s => {
+            const starVal = Number(s.dataset.value);
+            // Pinta da esquerda (1) até o valor atual (rating)
+            if (starVal <= rating) {
+                s.classList.add('filled');
+            } else {
+                s.classList.remove('filled');
+            }
+        });
+    };
+
+    for (let i = 5; i >= 1; i--) {
         const star = document.createElement('span');
         star.className = 'star';
-        star.innerHTML = '★'; // <--- ESTA LINHA FALTAVA. Sem ela, o span tem largura 0.
-        star.dataset.value = i;
-        star.role = 'radio';
-        star.tabIndex = 0;
+        star.innerHTML = '★';
+        star.dataset.value = i; // O valor real da nota
+        
+        star.onclick = () => {
+            selectedRating = i;
+            // Removemos 'filled' de todas e adicionamos conforme o clique
+            ratingInput.querySelectorAll('.star').forEach(s => {
+                s.classList.toggle('filled', Number(s.dataset.value) <= selectedRating);
+            });
+        };
+
         ratingInput.appendChild(star);
     }
 
-    // Handlers interativos
-    let selectedRating = 0;
-    ratingInput.querySelectorAll('.star').forEach(s => {
-        s.addEventListener('click', () => {
-            selectedRating = Number(s.dataset.value);
-            // Preenche todas as estrelas até a selecionada
-            ratingInput.querySelectorAll('.star').forEach(x => {
-                if (Number(x.dataset.value) <= selectedRating) {
-                    x.classList.add('filled');
-                } else {
-                    x.classList.remove('filled');
-                }
-            });
-        });
-        
-        s.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { 
-                e.preventDefault(); 
-                s.click(); 
-            }
-        });
+    // 3. Evento: Tirar o mouse do container -> Volta para a nota salva (ou 0)
+    ratingInput.addEventListener('mouseleave', () => {
+        paintStars(selectedRating);
     });
 
-    // Submit handler
+    // --- SUBMIT HANDLER ---
     const submitBtn = document.getElementById('submitReview');
-    // Removemos onclick anterior para evitar múltiplos binds se a função rodar várias vezes
-    submitBtn.onclick = null; 
+    submitBtn.onclick = null; // Remove listeners antigos
     
     submitBtn.onclick = () => {
         const comment = document.getElementById('reviewComment').value;
@@ -844,13 +856,12 @@ function renderModalReviews(work) {
         }
         addReview(slug, selectedRating, comment);
         
-        // Limpa formulário
+        // Reseta tudo após envio
         document.getElementById('reviewComment').value = '';
         selectedRating = 0;
-        ratingInput.querySelectorAll('.star').forEach(x => x.classList.remove('filled'));
+        paintStars(0); // Limpa as estrelas visuais
         
-        // Re-renderiza para mostrar o novo comentário
-        renderModalReviews(work); 
+        renderModalReviews(work); // Atualiza a lista
     };
 
     const clearBtn = document.getElementById('clearReviews');
