@@ -33,7 +33,7 @@ body {
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     letter-spacing: var(--tracking-body);
-    overflow-x: hidden;
+    overflow-x: auto;
     /* Isso impede o scroll lateral no mobile */
 }
 
@@ -114,7 +114,7 @@ body {
     padding: 0 10%;
     position: relative;
     color: var(--white);
-    overflow: hidden;
+    overflow: auto;
 }
 
 .hero-overlay {
@@ -169,7 +169,7 @@ body {
     letter-spacing: 0.6px;
     font-family: var(--font-sans);
     position: relative;
-    overflow: hidden;
+    overflow: auto;
     display: inline-block;
     text-decoration: none;
     transition: var(--transition);
@@ -1235,7 +1235,7 @@ body.no-scroll {
     box-shadow: 0 26px 60px rgba(12, 12, 12, 0.08);
     border: var(--border-hair) solid rgba(20, 20, 20, 0.04);
     position: relative;
-    overflow: hidden;
+    overflow: auto;
     transition: var(--transition)
 }
 
@@ -1307,7 +1307,7 @@ body.no-scroll {
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0;
-    overflow: hidden;
+    overflow: auto;
     z-index: 10000
 }
 
@@ -1962,6 +1962,7 @@ reviews-list::-webkit-scrollbar {
     #obraModal {
         width: 92%;
         max-height: 85vh;
+        overflow: auto;
     }
 
     .modal-wrapper {
@@ -2023,6 +2024,7 @@ reviews-list::-webkit-scrollbar {
         max-height: 100vh;
         border-radius: 0;
         margin: 0;
+        overflow: auto;
     }
 
     .modal-wrapper {
@@ -2086,6 +2088,7 @@ reviews-list::-webkit-scrollbar {
         height: 92vh;
         max-height: none;
         width: 95%;
+        overflow: auto;
     }
 
     .modal-grid {
