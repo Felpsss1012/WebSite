@@ -360,7 +360,6 @@ function renderWorks(obras) {
     const grid = document.querySelector(CONFIG.selectors.grid);
     const slider = document.querySelector(CONFIG.selectors.slider);
 
-    // Define qual container usar (prioriza o grid da galeria, depois o slider da home)
     const container = grid || slider;
     if (!container) return;
 
@@ -375,7 +374,6 @@ function renderWorks(obras) {
         const card = document.createElement('article');
         card.className = 'obra-card';
 
-        // Verifica se existe imagem, senão usa placeholder
         const imgUrl = obra.image || 'https://via.placeholder.com/400x600?text=Sem+Capa';
         const dataAno = obra.release_date ? obra.release_date.split('-')[0] : 'S/D';
 
@@ -383,8 +381,8 @@ function renderWorks(obras) {
             <div class="obra-img-container">
                 <img src="${imgUrl}" alt="${escapeHtml(obra.titulo)}" class="obra-img" loading="lazy">
                 <div class="obra-overlay" aria-hidden="true">
-                    <button class="btn-detalhes" aria-label="Ver detalhes de ${escapeHtml(obra.titulo)}">Ver Detalhes</button>
-                    <a class="btn-read btn-secondary" href="${obra.slug ? `${CONFIG.routes.leitura}?obra=${encodeURIComponent(obra.slug)}` : '#'}">Ler Online</a>
+                    <button class="btn-detalhes">Ver Detalhes</button>
+                    <a class="btn-amazon" href="${obra.linkAmazon || '#'}" target="_blank" rel="noopener noreferrer">Comprar na Amazon</a>
                 </div>
             </div>
             <div class="obra-info">
@@ -394,10 +392,10 @@ function renderWorks(obras) {
             </div>
         `;
 
-        // Clique na carta abre modal (detalhes)
+        // 1. Clique no card abre o modal
         card.addEventListener('click', () => openModal(obra));
 
-        // Intercepta botão "Ver Detalhes" para abrir modal sem propagar o clique da carta
+        // 2. Botão Detalhes: stopPropagation para não clicar no card e no botão ao mesmo tempo
         const btnDetalhes = card.querySelector('.btn-detalhes');
         if (btnDetalhes) {
             btnDetalhes.addEventListener('click', (e) => {
@@ -406,31 +404,22 @@ function renderWorks(obras) {
             });
         }
 
-        // Configura "Ler Online" (esconde se sem slug ou link)
-        const btnRead = card.querySelector('.btn-read');
-        if (btnRead) {
-            if (!obra.slug && !obra.linkRead) {
-                btnRead.style.display = 'none';
-            } else {
-                // evita que o clique no link dispare o openModal
-                btnRead.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    // se houver linkRead externo, use ele; senão navega para leitura interna
-                    if (obra.linkRead && obra.linkRead.length > 0) {
-                        window.location.href = obra.linkRead;
-                    } else {
-                        // link já foi definido no href (rota interna)
-                        // navegamos normalmente (mesma aba)
-                        // nada a fazer aqui — deixar o href funcionar
-                    }
-                });
+        // 3. Botão Amazon: stopPropagation para o link funcionar sem abrir o modal atrás
+        const btnAmazon = card.querySelector('.btn-read');
+        if (btnAmazon) {
+            btnAmazon.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            // Opcional: Esconde o botão se não houver link da Amazon cadastrado
+            if (!obra.amazon_link) {
+                btnAmazon.style.display = 'none';
             }
         }
 
         container.appendChild(card);
     });
 
-    // Se estivermos na Home, inicializa as setas
     if (slider) initSliderControls();
 }
 

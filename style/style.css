@@ -639,20 +639,39 @@ body {
     border-bottom-right-radius: 8px
 }
 
-.btn-detalhes {
-    background: rgba(255, 255, 255, 0.95);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-weight: 700;
+/* Base Comum para os dois botões (Tamanho e Fonte) */
+.btn-detalhes, .btn-amazon {
+    padding: 6px 12px;       /* Menor para não cobrir a obra */
+    border-radius: 6px;
+    font-size: 12px;         /* Fonte pequena e elegante */
+    font-weight: 600;
     cursor: pointer;
-    color: var(--text-main);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06)
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border: none;
+    white-space: nowrap;
 }
 
-.btn-detalhes:hover {
-    transform: translateY(-2px)
+/* Estilo Individual: Ver Detalhes (Branco) */
+.btn-detalhes {
+    background: white;
+    color: black;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
+/* Estilo Individual: Comprar na Amazon (Preto) */
+.btn-amazon {
+    background: black;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Efeito ao passar o mouse */
+.btn-detalhes:hover { background: #f0f0f0; transform: translateY(-1px); }
+.btn-amazon:hover { background: #333; transform: translateY(-1px); }
 
 .btn-read {
     display: inline-flex;
