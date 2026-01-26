@@ -1,392 +1,449 @@
-/* leitura.css — Versão refeita e responsiva
-   Substituir totalmente o arquivo atual por este conteúdo.
-   Mantive todos os IDs e classes existentes no HTML. */
+/* leitura.css — Versão Clean & Responsive */
 
-/* ===================== VARIÁVEIS ===================== */
-:root{
-  --bg: #ffffff;
-  --page-bg: #f7f8fb;
-  --muted: #6b6b75;
-  --accent: #0b79ff;             /* azul principal (botão) */
-  --accent-2: #e6f2ff;
-  --card-shadow: 0 20px 40px rgba(11,121,255,0.06);
-  --soft-shadow: 0 8px 20px rgba(20,20,30,0.06);
-  --glass: rgba(255,255,255,0.6);
-  --radius: 14px;
-  --reader-width: 560px;         /* largura do "livro" no desktop */
-  --max-width: 1200px;
+/* Variáveis Visuais */
+:root {
+  --bg: #f9f9f9;
+  --bg-card: #ffffff;
   --text-main: #11121a;
-  --transition: 220ms cubic-bezier(.2,.9,.3,1);
-  --focus: 3px solid rgba(11,121,255,0.16);
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --text-muted: #6b6b75;
+  --accent: #0b79ff;
+  --accent-hover: #0056b3;
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
+  --nav-arrow-bg: rgba(0, 0, 0, 0.4);
+  --nav-arrow-color: #fff;
+  --max-width: 1300px;
+  --col-left: 280px;
+  --col-right: 320px;
   --font-serif: 'Playfair Display', serif;
-  --mobile-break: 992px;
+  --font-sans: 'Inter', system-ui, sans-serif;
 }
 
-/* ===================== RESET BASE ===================== */
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  background: var(--page-bg);
-  color:var(--text-main);
-  font-family:var(--font-sans);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  -webkit-text-size-adjust:100%;
-  line-height:1.45;
-  -webkit-font-variant-ligatures: none;
+/* Reset Básico */
+* {
+  box-sizing: border-box;
 }
 
-/* links e utilitários */
-a{color:var(--accent); text-decoration:none}
-.hidden{display:none !important}
-
-/* ===================== LAYOUT PRINCIPAL ===================== */
-main#readerApp{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding: 40px 20px 80px;
+body {
+  margin: 0;
+  background-color: var(--bg);
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Container central com 3 colunas (sidebar, leitura, coluna direita) */
-.reader-container{
-  width:100%;
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Layout Principal */
+#readerApp {
+  padding: 80px 20px 60px;
+  /* espaço pro header fixo */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.reader-grid {
+  display: grid;
+  grid-template-columns: var(--col-left) 1fr var(--col-right);
+  /* 3 colunas */
+  gap: 32px;
+  width: 100%;
   max-width: var(--max-width);
-  display:grid;
-  grid-template-columns: 260px 1fr 220px;
-  gap:32px;
-  align-items:start;
-  margin: 8px auto;
+  align-items: start;
+  /* importante para o sticky funcionar */
 }
 
-/* adaptador para usar quando JS esconde o mainContent: manter estrutura centralizada */
-#mainContent.hidden{display:none}
-
-/* ===================== SIDEBAR ESQUERDA ===================== */
-.reader-sidebar{
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  align-items:flex-start;
+/* Loader Centralizado */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: var(--text-muted);
 }
 
-/* mini capa */
-.book-mini-cover{
-  width:100%;
-  max-width:200px;
-  border-radius:10px;
-  box-shadow:var(--soft-shadow);
-  background:linear-gradient(180deg,#fff,#fbfdff);
-  object-fit:cover;
-  display:block;
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
 }
 
-/* título e sinopse */
-#bookTitle{
-  font-family:var(--font-serif);
-  font-size:1.15rem;
-  margin:10px 0 4px;
-  color:var(--text-main);
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-#bookSynopsis{
-  font-size:0.92rem;
-  color:var(--muted);
-  line-height:1.35;
-  margin-bottom:8px;
+/* COLUNA ESQUERDA (Fixo enquanto rola) */
+.sticky-sidebar {
+  position: sticky;
+  top: 100px;
+  /* margem do topo fixo */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* botão comprar na sidebar */
-.btn-primary{
-  display:inline-block;
-  padding:10px 14px;
-  border-radius:999px;
-  background:linear-gradient(180deg,var(--accent),#0066d6);
-  color:#fff;
-  font-weight:700;
-  text-align:center;
-  box-shadow: 0 10px 28px rgba(11,121,255,0.12);
-  border: none;
+.book-info-card {
+  text-align: center;
+  /* background: var(--bg-card); padding: 20px; border-radius: var(--border-radius); box-shadow: var(--shadow-soft); */
+  /* Removido o card bg para ficar mais clean, se preferir */
+}
+
+.book-cover-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.book-cover-img {
+  width: 100%;
+  max-width: 180px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  /* Sombra elegante de livro */
+  margin-bottom: 16px;
+  transition: transform 0.3s ease;
+}
+
+.book-cover-img:hover {
+  transform: translateY(-4px);
+}
+
+.book-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+
+.book-synopsis {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  /* Limita a sinopse se for longa */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Botão Clean */
+.btn-primary {
+  display: inline-block;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: var(--accent);
+  color: black;
+  font-weight: 600;
+  border-radius: 8px;
+  text-align: center;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 4px 14px rgba(11, 121, 255, 0.25);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+
+/* COLUNA CENTRAL (PDF) */
+.col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.pdf-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Viewport do PDF + Zonas de Clique */
+.pdf-viewport {
+  position: relative;
+  /* para posicionar as setas */
+  width: 100%;
+  max-width: 800px;
+  /* Largura máxima da página */
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  /* Transparente para destacar o canvas */
+}
+
+#pdfCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  /* Leve arredondamento na página */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  /* Sombra sutil de papel */
+  background: white;
+  /* Cor da página */
+}
+
+/* Zonas de Navegação Invisíveis */
+.nav-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  /* Metade da tela para cada lado */
   cursor: pointer;
-  transition: transform var(--transition), box-shadow var(--transition);
-  width:100%;
-  max-width:220px;
+  display: flex;
+  align-items: center;
+  /* Centraliza seta verticalmente */
+  opacity: 0;
+  /* Invisível por padrão */
+  transition: opacity 0.25s ease;
+  z-index: 10;
 }
 
-.btn-primary:hover{ transform: translateY(-4px); box-shadow: 0 18px 40px rgba(11,121,255,0.14); }
-.btn-primary:active{ transform: translateY(-1px); }
-
-/* lista de capítulos */
-.chapter-nav{
-  list-style:none;
-  padding:0;
-  margin:6px 0 0;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  width:100%;
+.nav-zone.prev {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 20px;
 }
 
-.chapter-nav li{ width:100% }
-.chapter-nav button{
-  width:100%;
-  background: #fff;
-  border: 1px solid rgba(16,16,24,0.04);
-  padding:10px 12px;
-  border-radius:10px;
-  text-align:left;
-  cursor:pointer;
-  font-weight:600;
-  color:var(--text-main);
-  transition: background var(--transition), transform var(--transition);
-  box-shadow: 0 6px 16px rgba(20,20,30,0.02);
-  font-size:0.95rem;
-}
-.chapter-nav button:hover{ transform: translateY(-3px); background: #fbfbff }
-.chapter-nav button.active{
-  background: linear-gradient(90deg, rgba(11,121,255,0.06), rgba(11,121,255,0.02));
-  border-color: rgba(11,121,255,0.12);
-  box-shadow: 0 8px 26px rgba(11,121,255,0.04);
+.nav-zone.next {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 20px;
 }
 
-/* ===================== ÁREA DE LEITURA (CENTRO) ===================== */
-.reading-area{
-  display:flex;
-  flex-direction:column;
-  align-items:center; /* centraliza leitor */
-  justify-content:flex-start;
-  gap:6px;
-  padding:6px 12px;
+/* Hover: mostra levemente a seta */
+.nav-zone:hover {
+  opacity: 1;
 }
 
-/* conteúdo interno centralizado com width controlada */
-.reading-content{
-  width:100%;
-  max-width:980px;
-  padding: 6px 10px;
+/* Seta estilizada */
+.nav-arrow {
+  font-size: 2rem;
+  color: var(--nav-arrow-color);
+  background: var(--nav-arrow-bg);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  user-select: none;
+  backdrop-filter: blur(4px);
 }
 
-/* título do capítulo */
-#currentChapterTitle{
-  font-family:var(--font-serif);
-  font-size:1.5rem;
-  margin:6px 0 6px;
-  color:var(--text-main);
+/* Info da Página */
+.reader-controls {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-/* texto curto (quando não há pdf, ex: "Aguardando seleção...") */
-.reading-text{
-  color:var(--muted);
-  margin-bottom:10px;
+.error-box {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 20px;
 }
 
-/* CTA abaixo do leitor */
-.cta-box{ margin-top:18px; text-align:center; color:var(--muted) }
-.cta-box .btn-tag{
-  display:inline-block;
-  margin-top:10px;
-  padding:10px 16px;
-  border-radius:999px;
-  background:var(--accent-2);
-  color:var(--accent);
-  font-weight:700;
-  text-decoration:none;
+
+/* COLUNA DIREITA (Reviews) */
+.reviews-section {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+  max-height: 80vh;
+  /* Altura máxima com scroll interno */
+  overflow-y: auto;
 }
 
-/* ===================== CARTÃO DO PDF / LEITOR ===================== */
-.pdf-wrapper{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-  margin: 20px auto;
+/* Scrollbar bonita */
+.reviews-section::-webkit-scrollbar {
+  width: 6px;
 }
 
-/* viewport: mantém o canvas centralizado e responsivo */
-#pdfViewport{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+.reviews-section::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 4px;
 }
 
-/* O "canvas" visual do livro — renderiza bonito como cartão */
-#pdfCanvas{
-  width:100%;
-  max-width: var(--reader-width);
-  height:auto;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: var(--card-shadow);
-  display:block;
-  border: 1px solid rgba(12,12,20,0.04);
-  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
-  padding: 22px 18px; /* se estiver usando canvas real, padding não afeta; serve caso seja img */
+.reviews-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  margin: 0 0 16px;
 }
 
-/* controles de navegação do pdf */
-.pdf-controls{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  align-items:center;
-  margin-top:6px;
+.reviews-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.pdf-nav{
-  background:#fff;
-  border:1px solid rgba(16,16,24,0.06);
-  padding:8px 12px;
-  border-radius:10px;
-  cursor:pointer;
-  box-shadow: 0 6px 18px rgba(20,20,30,0.02);
-  transition: transform var(--transition);
-}
-.pdf-nav:hover{ transform: translateY(-4px) }
-
-/* informação de página */
-#pdfPageInfo{
-  font-size:0.95rem;
-  color:var(--muted);
-  margin-top:8px;
+.badge-approval {
+  background: #e6fffa;
+  color: #047857;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 20px;
 }
 
-/* ===================== COLUNA DIREITA (ESPAÇO EXTRA / AVALIAÇÕES) ===================== */
-.reader-container > div:nth-child(3){
-  min-height:120px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  padding:10px;
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-/* Avaliações (reviews) */
-.reviews-summary{ display:flex; gap:12px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
-.review-stars{ display:flex; gap:6px; align-items:center; }
-
-/* estrela simples utilizando background amarelo e máscara via svg */
-.star{
-  width:22px; height:22px;
-  display:inline-block;
-  background:#ffd966;
-  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
-  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.786 1.402 8.17L12 18.896 4.664 23.166l1.402-8.17L.132 9.21l8.2-1.192z"/></svg>') center/contain no-repeat;
-  opacity:0.18;
-}
-.star.filled{ opacity:1; transform:scale(1.03); }
-
-/* badge aprovação */
-.approval-badge{
-  font-weight:700;
-  background:linear-gradient(90deg,#e9fbf2,#f0f9f7);
-  color:#1a7a44;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:0.9rem;
-  display:inline-block;
+.review-card {
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f7f7f7;
+  padding-bottom: 12px;
 }
 
-/* lista de reviews */
-.reviews-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-top:6px;
-  max-height:46vh;
-  overflow-y:auto;
-  padding-right:6px;
+.review-card:last-child {
+  border-bottom: none;
 }
 
-/* cards de review */
-.review-card{
-  border-radius:10px;
-  background:#fff;
-  padding:14px 16px;
-  border:1px solid rgba(12,12,20,0.04);
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  box-shadow:var(--soft-shadow);
+.review-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* metadados */
-.review-card .meta{ font-size:0.85rem; color:var(--muted) }
-.review-card .comment-text{ font-size:0.96rem; color:#222; line-height:1.5 }
-
-/* scrollbar suave */
-.reviews-list::-webkit-scrollbar{ width:10px }
-.reviews-list::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.06); border-radius:8px }
-
-/* ===================== ACESSIBILIDADE E FOCOS ===================== */
-button:focus, .chapter-nav button:focus, .pdf-nav:focus, .btn-primary:focus{
-  outline: var(--focus);
-  outline-offset: 4px;
-  border-radius: 10px;
+/* Estrelas */
+.star {
+  color: #e0e0e0;
+  font-size: 1.1rem;
 }
 
-/* ===================== TRANSIÇÕES E MICRO-ANIMAÇÕES ===================== */
-#pdfCanvas, .book-mini-cover, .chapter-nav button, .btn-primary{
-  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+.star.filled {
+  color: #fbbf24;
 }
 
-/* ===================== RESPONSIVIDADE ===================== */
-@media (max-width: 1200px){
-  :root{ --reader-width: 520px; }
-  .reader-container{ grid-template-columns: 220px 1fr 180px; gap:24px; }
-  .book-mini-cover{ max-width: 170px; }
-}
+/* Amarelo ouro */
 
-@media (max-width: 992px){ /* tablet/phone layout — empilha e centraliza */
-  :root{ --reader-width: 640px; }
-  .reader-container{
-    grid-template-columns: 1fr;
-    max-width: 920px;
-    padding: 0 18px;
+
+/* RESPONSIVIDADE (Mobile First Logic applied last) */
+
+/* Tablets (1024px e abaixo) */
+@media (max-width: 1024px) {
+  .reader-grid {
+    grid-template-columns: 240px 1fr;
+    /* Esconde coluna da direita ou move pra baixo? */
+    /* Vamos mover reviews para baixo */
   }
 
-  .reader-sidebar{
-    order:1;
-    width:100%;
-    flex-direction:row;
-    gap:12px;
-    align-items:center;
-    padding:12px 0;
+  .col-right {
+    display: none;
+    /* Simplificação: esconde reviews lateral em tablet, ou poderia mover pro fundo */
   }
-  .book-mini-cover{ max-width:120px; margin-right:12px }
-  .reading-area{ order:2; padding: 0 6px }
-  .reader-container > div:nth-child(3){ display:none } /* remove a coluna direita para mobile */
-  .pdf-wrapper{ margin:12px auto; width:100%; max-width:var(--reader-width) }
-  #pdfCanvas{ border-radius:12px }
-  .reviews-list{ max-height:34vh }
+
+  /* Se quiser mostrar reviews em tablet, teria que reestruturar o grid para 1 coluna ou flex-wrap */
 }
 
-@media (max-width: 480px){
-  :root{ --reader-width: 320px; }
-  #currentChapterTitle{ font-size:1.05rem }
-  .chapter-nav button{ padding:8px 10px; font-size:0.92rem }
-  .btn-primary{ padding:9px 10px; font-size:0.85rem; max-width:100% }
-  .book-mini-cover{ display:block; max-width:100px }
-  .review-card{ padding:12px }
-  .reviews-list{ max-height:28vh }
+/* Mobile e Tablets Pequenos (< 900px) */
+@media (max-width: 900px) {
+  #readerApp {
+    padding-top: 80px;
+  }
+
+  .reader-grid {
+    display: flex;
+    flex-direction: column;
+    /* Empilha tudo verticalmente */
+    gap: 40px;
+    align-items: center;
+  }
+
+  .sticky-sidebar {
+    position: static;
+    width: 100%;
+    align-items: center;
+  }
+
+  /* Ajuste da Coluna Esquerda (agora Topo) */
+  .col-left .book-info-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .book-synopsis {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    max-width: 600px;
+    margin: 0 auto 16px;
+  }
+
+  .btn-primary {
+    max-width: 300px;
+  }
+
+  /* Ajuste do PDF */
+  .pdf-viewport {
+    width: 100%;
+    /* Remove setas laterais em mobile se atrapalhar o touch, ou ajusta tamanho */
+  }
+
+  /* Zonas de toque em mobile podem atrapalhar o scroll. 
+     Vamos diminuir a zona de toque ou confiar em botões visíveis se preferir. 
+     Mas para manter o pedido, mantemos as zonas, mas talvez menores. */
+  .nav-zone {
+    width: 30%;
+  }
+
+  /* Deixa o meio livre para scroll */
+  .nav-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+
+  /* Ajuste Coluna Direita (Reviews aparecem no fundo agora) */
+  .col-right {
+    display: block;
+    /* Reaparece no fundo */
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .reviews-section {
+    max-height: none;
+    overflow: visible;
+  }
 }
-
-/* ===================== POLISH EXTRA (pequenos toques estéticos) ===================== */
-
-/* leve elevação ao passar o mouse no cartão do livro */
-#pdfCanvas:hover{ transform: translateY(-4px); filter: saturate(1.01) }
-
-/* pequena diferenciação do texto "aguardando" */
-.reading-text { font-size:0.98rem; color:var(--muted); }
-
-/* garantir que o loader seja visível e centralizado no início */
-#loader{ color:var(--muted); font-weight:600 }
-
-/* evita que o footer encoste no leitor em telas curtas */
-.footer-institucional{ margin-top:40px }
-
-/* fim do arquivo */

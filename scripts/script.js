@@ -382,7 +382,7 @@ function renderWorks(obras) {
                 <img src="${imgUrl}" alt="${escapeHtml(obra.titulo)}" class="obra-img" loading="lazy">
                 <div class="obra-overlay" aria-hidden="true">
                     <button class="btn-detalhes">Ver Detalhes</button>
-                    <a class="btn-amazon" href="${obra.linkAmazon || '#'}" target="_blank" rel="noopener noreferrer">Comprar na Amazon</a>
+                    <a class="btn-amazon btn-secondary" href="${obra.linkAmazon || '#'}" target="_blank" rel="noopener noreferrer">Comprar na Amazon</a>
                 </div>
             </div>
             <div class="obra-info">
@@ -521,53 +521,58 @@ function openModal(work, triggerElement) {
         title: modal.querySelector('#modalTitle'),
         year: modal.querySelector('#modalYear'),
         cat: modal.querySelector('#modalCategory'),
-        synopsis: modal.querySelector('#modalSynopsis'), // A sinopse textual
-        btnRead: modal.querySelector('#btnRead'),
-        btnBuy: modal.querySelector('#btnBuy'),
-        // Aba de avaliações (se você tiver um container para injetar elas)
-        reviews: modal.querySelector('#tab-avaliacoes') 
+        synopsis: modal.querySelector('#modalSynopsis'),
+        btnRead: modal.querySelector('#btnRead'), // Botão Ler Online
+        btnBuy: modal.querySelector('#btnBuy'),   // Botão Amazon
+        reviews: modal.querySelector('#tab-avaliacoes')
     };
 
+    // Preenche dados básicos
     if (els.img) {
         els.img.src = work.image || '';
         els.img.alt = `Capa de ${work.title}`;
     }
-    
     if (els.title) els.title.textContent = work.title;
     if (els.year) els.year.textContent = work.year || 'N/A';
     if (els.cat) els.cat.textContent = work.categorias ? work.categorias.join(', ') : 'Geral';
-    
-    // Injeta a sinopse. Se for HTML vindo do Sanity, use innerHTML com cuidado.
     if (els.synopsis) els.synopsis.textContent = work.sinopse;
 
-    // Lógica de Avaliações (Exemplo: Se a obra tiver avaliações no objeto 'work')
-    if (els.reviews && work.reviews) {
-        els.reviews.innerHTML = work.reviews.map(rev => `<div class="review-item">${rev}</div>`).join('');
-    }
-
-    // Configuração de botões (Mantida sua lógica)
-    if (els.btnRead) {
-        const hasLink = work.linkRead && work.linkRead !== '#';
-        els.btnRead.style.display = (hasLink || work.slug) ? 'inline-flex' : 'none';
-        if (hasLink || work.slug) {
-            els.btnRead.href = work.slug ? `${CONFIG.routes.leitura}?obra=${work.slug}` : work.linkRead;
-            els.btnRead.target = work.slug ? '_self' : '_blank';
-        }
-    }
-
+    // --- LÓGICA DO BOTÃO AMAZON (btnBuy) ---
+    // Prioridade total para este botão conforme solicitado
     if (els.btnBuy) {
         if (work.linkAmazon && work.linkAmazon !== '#') {
             els.btnBuy.href = work.linkAmazon;
             els.btnBuy.style.display = 'inline-flex';
+            els.btnBuy.textContent = 'Comprar na Amazon'; // Garante o texto correto
+            els.btnBuy.target = '_blank';
+            els.btnBuy.rel = 'noopener noreferrer';
         } else {
             els.btnBuy.style.display = 'none';
         }
     }
 
+    // --- LÓGICA DO BOTÃO LER ONLINE (btnRead) ---
+    if (els.btnRead) {
+        const hasLink = work.linkRead && work.linkRead !== '#';
+        const hasSlug = !!work.slug;
+        
+        // Só mostra se tiver link E se você quiser que apareça junto com o da Amazon
+        if (hasLink || hasSlug) {
+            els.btnRead.href = work.slug ? `${CONFIG.routes.leitura}?obra=${work.slug}` : work.linkRead;
+            els.btnRead.target = work.slug ? '_self' : '_blank';
+            els.btnRead.style.display = 'inline-flex';
+        } else {
+            els.btnRead.style.display = 'none';
+        }
+    }
+
+    // Renderiza avaliações
+    try { renderModalReviews(work); } catch (err) { console.error('Erro reviews:', err); }
+
     document.body.classList.add('no-scroll');
     modal.showModal();
-    
-    // SEO/UX
+
+    // SEO
     document.title = `${work.title} | Mario Paulo`;
 }
 
@@ -897,33 +902,6 @@ document.addEventListener('click', (e) => {
         }
     }
 });
-
-/* Hook: quando abrir modal, renderiza reviews e garante Ler Online */
-const _openModalOrig = openModal;
-openModal = function (work, triggerElement) {
-    _openModalOrig(work, triggerElement);
-
-    // renderiza avaliações (se existir)
-    try { renderModalReviews(work); } catch (err) { console.error('renderModalReviews error', err); }
-
-    // garante botão Ler Online visível e apontando corretamente
-    const els = {
-        btnRead: document.getElementById('btnRead'),
-    };
-    if (els.btnRead) {
-        if (work.linkRead && work.linkRead.length) {
-            els.btnRead.href = work.linkRead;
-            els.btnRead.style.display = 'inline-flex';
-            els.btnRead.target = '_blank';
-        } else if (work.slug) {
-            els.btnRead.href = `${CONFIG.routes.leitura}?obra=${encodeURIComponent(work.slug)}`;
-            els.btnRead.style.display = 'inline-flex';
-            els.btnRead.target = '_self';
-        } else {
-            els.btnRead.style.display = 'none';
-        }
-    }
-};
 
 document.addEventListener('DOMContentLoaded', () => {
     const revealImages = document.querySelectorAll('.img-reveal');
