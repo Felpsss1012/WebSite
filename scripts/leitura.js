@@ -103,7 +103,7 @@ function renderReader(book) {
     } else {
         // Fallback Texto (se necessário)
         const textContent = document.getElementById('textContent');
-        if (textContent) textContent.textContent = "Leitura disponível apenas em PDF para esta obra.";
+        if (textContent) textContent.textContent = "Leitura disponível apenas em Mídia fisica para esta obra.";
     }
 
     // --- Coluna Direita (Reviews) renderizada via IIFE abaixo ---
