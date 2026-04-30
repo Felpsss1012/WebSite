@@ -33,7 +33,7 @@ body {
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     letter-spacing: var(--tracking-body);
-    overflow-x: auto;
+    overflow-x: hidden;
     /* Isso impede o scroll lateral no mobile */
 }
 
@@ -277,7 +277,7 @@ body {
 
 .obras-header .btn-tertiary {
     padding: 14px 44px;
-    min-width: 340px;
+    min-width: 200px;
     text-align: center;
     font-size: 1rem;
     border-radius: 999px;
@@ -2133,5 +2133,342 @@ reviews-list::-webkit-scrollbar {
         flex: none;
         height: 300px;
         position: relative;
+    }
+}
+/* =========================================
+   MOBILE RESPONSIVIDADE — CORREÇÕES
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    /* === BODY & GLOBALS === */
+    body {
+        overflow-x: hidden;
+    }
+
+    /* === HEADER === */
+    .main-header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px 5%;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .nav-links {
+        gap: 16px;
+    }
+
+    .nav-links a {
+        font-size: 0.75rem;
+        letter-spacing: 1.2px;
+    }
+
+    /* === HERO === */
+    .hero {
+        padding: 0 6%;
+        min-height: 80vh;
+        align-items: flex-end;
+        padding-bottom: 60px;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-content h1 {
+        font-size: clamp(2rem, 9vw, 3rem);
+    }
+
+    .description {
+        font-size: 1rem;
+        max-width: 100%;
+    }
+
+    .btn-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    /* === TRAJETÓRIA (index) === */
+    .trajetoria {
+        padding: 60px 5%;
+    }
+
+    .container-trajetoria {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        text-align: center;
+    }
+
+    .trajetoria-image-wrapper {
+        order: -1;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    .trajetoria-text h2 {
+        font-size: 2rem;
+    }
+
+    .trajetoria-metricas {
+        justify-content: center;
+        margin-top: 32px;
+    }
+
+    .btn-text-link {
+        display: block;
+        text-align: center;
+    }
+
+    /* === OBRAS (index) === */
+    .obras {
+        padding: 60px 5%;
+    }
+
+    .obras-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .obras-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .obras-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .obras-header .btn-tertiary {
+        width: 100%;
+        min-width: unset;
+        padding: 12px 24px;
+        text-align: center;
+    }
+
+    .slider-controls {
+        align-self: flex-end;
+    }
+
+    /* === BIO PAGE — INTRO === */
+    .bio-container {
+        padding: 80px 5% 60px 5%;
+    }
+
+    .bio-intro {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 48px;
+    }
+
+    .bio-portrait {
+        order: -1;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
+    .bio-intro h1 {
+        font-size: clamp(2rem, 9vw, 2.8rem);
+        letter-spacing: -0.5px;
+        line-height: 1.1;
+    }
+
+    .bio-tagline {
+        font-size: 1rem;
+    }
+
+    .bio-summary {
+        font-size: 0.95rem;
+        text-align: left;
+    }
+
+    /* === BIO PAGE — RESEARCH GRID === */
+    .research-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 20px;
+    }
+
+    /* === BIO PAGE — TIMELINE === */
+    .timeline-block {
+        grid-template-columns: 100px 1fr;
+        gap: 16px;
+    }
+
+    .timeline-year {
+        font-size: 0.8rem;
+        padding-right: 12px;
+    }
+
+    /* === BIO PAGE — STATEMENT === */
+    .bio-statement {
+        padding: 40px 5%;
+    }
+
+    .bio-statement blockquote {
+        font-size: 1.1rem;
+    }
+
+    /* === BIO — SECTION TITLES === */
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .bio-section {
+        margin-bottom: 48px;
+    }
+
+    /* === DIVIDER === */
+    .divider-subtle {
+        margin: 36px 0;
+    }
+
+    /* === FOOTER === */
+    .footer-institucional {
+        padding: 60px 5% 32px 5%;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        text-align: center;
+    }
+
+    .footer-description {
+        max-width: 100%;
+        margin: 0 auto 20px;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    /* === CATÁLOGO === */
+    .catalogo-main {
+        padding: 80px 5% 60px 5%;
+    }
+
+    .catalogo-intro h1 {
+        font-size: 2.2rem;
+    }
+
+    .catalogo-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .filters-box {
+        flex-direction: column;
+    }
+
+    .filters-box select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* === OBRA CARDS === */
+    .catalogo-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Header compacto */
+    .main-header {
+        padding: 10px 4%;
+    }
+
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .nav-links {
+        gap: 12px;
+    }
+
+    .nav-links a {
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+    }
+
+    /* Hero */
+    .hero {
+        padding-bottom: 48px;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    /* Bio intro */
+    .bio-intro h1 {
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+    }
+
+    .bio-portrait {
+        max-width: 160px;
+    }
+
+    /* Timeline ainda mais compacto */
+    .timeline-block {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .timeline-year {
+        text-align: left;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding-right: 0;
+        padding-bottom: 6px;
+        margin-bottom: 4px;
+    }
+
+    /* Research grid */
+    .research-grid {
+        padding: 16px;
+    }
+
+    /* Modal full screen */
+    #obraModal {
+        width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .modal-wrapper {
+        flex-direction: column;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal-image-wrapper {
+        height: 240px;
+        flex-shrink: 0;
+        padding: 16px;
+    }
+
+    .modal-content {
+        padding: 16px;
+        overflow-y: visible;
+        height: auto;
     }
 }
